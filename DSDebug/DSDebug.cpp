@@ -1,38 +1,72 @@
 #include <iostream>
 #include "tigr.h"
+#include <vector>
+#include <string>
+#include <map>
 
+
+
+
+class DataStructure {
+private:
+    std::vector<int> frame;
+
+public:
+    DataStructure() {
+    }
+    void SaveFrame(std::vector<int> frame) {
+        this->frame = frame;
+    }
+
+};
 
 class DSDebug 
 {
-protected:
-    DSDebug() {
+private:
 
-    }
-    static DSDebug* instance;
+    DSDebug() {}
+    static Tigr* screen;
 
+    static std::map <std::string, DataStructure> dataStructures;
 
 public:
 
-    DSDebug() = delete;
-
     void operator = (const DSDebug&) = delete;
 
-    static DSDebug* GetInstance();
+    static void Log(std::vector<int> dataStructure, std::string dsName) {
 
-    void Test() {
-        std::cout << "Test Test Test"<< std::endl;
+        if (!dataStructures.contains(dsName)) {
+            dataStructures[dsName] = DataStructure();
+            std::cout << "New data strucuter found, instantiating "<< dsName << std::endl;
+        }
+        dataStructures[dsName].SaveFrame(dataStructure);
+
+
+        tigrClear(screen, tigrRGB(0x80, 0x90, 0xa0));
+        tigrPrint(screen, tfont, 120, 110, tigrRGB(0xff, 0xff, 0xff), "Hello, world.");
+
+        bool displayNext = false;
+        while (displayNext)
+        {
+            tigrUpdate(screen);// checks for user input
+        }
+
     }
-
+    static void End() {
+        while (!tigrClosed(screen))
+        {
+            tigrUpdate(screen);// checks for user input
+        }
+        tigrFree(screen);
+    }
 
     
 };
 
-DSDebug* DSDebug::instance = nullptr;
-DSDebug *DSDebug::GetInstance() {
-    if (instance == nullptr) {
-        instance = new DSDebug();
-    }
-}
+Tigr* DSDebug::screen = tigrWindow(320, 240, "DSDebug", 0);
+std::map <std::string, DataStructure> DSDebug::dataStructures{};
+
+
 
 
 
@@ -40,16 +74,17 @@ DSDebug *DSDebug::GetInstance() {
 
 int main(int argc, char* argv[])
 {
-    DSDebug::GetInstance()->Test();
+    //Initialize array and DSDebug
+    std::vector<int> testDS= { 2,3,4,5,6,7,8 };
+    DSDebug::Log(testDS, "Test");
 
-    /*Tigr* screen = tigrWindow(320, 240, "Hello", 0);
-    while (!tigrClosed(screen))
-    {
-        tigrClear(screen, tigrRGB(0x80, 0x90, 0xa0));
-        tigrPrint(screen, tfont, 120, 110, tigrRGB(0xff, 0xff, 0xff), "Hello, world.");
-        tigrUpdate(screen);
-    }
-    tigrFree(screen);
-    return 0;*/
+    testDS = { 2,3,4,5,6,7,8 };
+    DSDebug::Log(testDS, "NewData");
+
+    testDS = { 2,3,4,5,6,7,8 };
+    DSDebug::Log(testDS, "NewData");
+
+    DSDebug::End();
+    return 0;
 }
 
