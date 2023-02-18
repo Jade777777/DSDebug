@@ -37,11 +37,9 @@ private:
     static bool waitingForInput;
 
 
-    class ButtonEvent {
+    class ButtonEvent { 
     public:
-        virtual void Activate(){
-            std::cout << "Empty Button Event Activated!" << std::endl;
-        }
+        virtual void Activate() = 0; 
     
     };
 
@@ -50,9 +48,9 @@ private:
         void Activate() {
             std::map <std::string, DataStructure>::iterator it = dataStructures.begin();
             for (it; it != dataStructures.end(); ++it) {
-                if (it->first == currentDS) {
-                    std::cout << "Found It!" << std::endl;
-                    it++;
+                if (it->first == currentDS) {// find the current data structuer
+
+                    it++;// get the next data structure
                     if (it == dataStructures.end()) {
                         currentDS = dataStructures.begin()->first;
                     }
@@ -69,8 +67,9 @@ private:
         void Activate() {
             std::map <std::string, DataStructure>::iterator it = dataStructures.begin();
             for (it; it != dataStructures.end(); ++it) {
-                if (it->first == currentDS) {
-                    std::cout << "Found It!" << std::endl;
+                if (it->first == currentDS) {//find the current data structure
+                    
+                    //get the previous data structure
                     if (it == dataStructures.begin()) {
                         it = dataStructures.end();
                     }
@@ -125,7 +124,6 @@ private:
             }
             else {
                 
-                std::cout << waitingForInput << std::endl;
                 //button Highlighted
                 tigrFill(screen, x, y, width, height, highlight);
                 if (waitingForInput == false) {
@@ -219,6 +217,15 @@ int main(int argc, char* argv[])
     
     testDS = { 2,3,4,5,6,7,8 };
     DSDebug::Log(testDS, "2Test");
+
+    testDS = { 2,3,4,5,6,7,8 };
+    DSDebug::Log(testDS, "3Test");
+
+    testDS = { 2,3,4,5,6,7,8 };
+    DSDebug::Log(testDS, "4Test");
+
+    testDS = { 2,3,4,5,6,7,8 };
+    DSDebug::Log(testDS, "5Test");
 
     testDS = { 2,3,4,5,6,7,8 };
     DSDebug::Log(testDS, "3Test");
