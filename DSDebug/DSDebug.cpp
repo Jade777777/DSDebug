@@ -31,11 +31,9 @@ private:
 
         void Draw() {
             {
-                const int increment = 20;
+                const int increment = 70;
                 int xOffset = 50;
                 int length = frames.size();
-
-                tigrPrint(screen, tfont, 25, 25, tigrRGB(0xFF, 0xFF, 0xFF), "Printing Array :)");
 
                 for (int i = 0; i < length; i++)
                 {
@@ -44,7 +42,7 @@ private:
                     // Next two lines change the array from a int array to a const char * array (Tigr stuff)
                     std::string iValue = std::to_string(frames[i]);
                     char const* iPrintValue = iValue.c_str();
-                    tigrPrint(screen, tfont, xOffset, 50, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+                    tigrPrint(screen, tfont, xOffset, 400, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
                 }
 
             }
