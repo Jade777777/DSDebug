@@ -26,5 +26,8 @@
     <ClInclude Include="Tigr\tigr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DSDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
