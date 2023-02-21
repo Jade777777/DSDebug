@@ -26,19 +26,25 @@ private:
             this->data = data;
         }
         void Draw() {
-            const int increment = 70;
-            int xOffset = 50;
-            int length = data.size();
 
-            for (int i = 0; i < length; i++)
-            {
-                // temp 4 increments x value by 20 every loop moving it across the screen
-                xOffset += increment;
-                // Next two lines change the array from a int array to a const char * array (Tigr stuff)
-                std::string iValue = std::to_string(data[i]);
+            //print out frames
+            int offset = 0;
+
+            //iterate through each frame in frames vector
+            for (auto const& c : data) {
+
+                std::string iValue = std::to_string(c);
                 char const* iPrintValue = iValue.c_str();
-                tigrPrint(screen, tfont, xOffset, 400, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+
+                //print number
+                tigrPrint(screen, tfont, 20, 100 + offset, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+
+                //print bar
+                tigrFill(screen, 30, 100 + offset, 10, 10, tigrRGB(255, 0, 0));
+
+                offset += 15;
             }
+
         }
     };
 
@@ -57,16 +63,17 @@ private:
             this->frames.emplace_back(frame);
         }
         void NextFrame() {
-            currentFrame++;
-            currentFrame = currentFrame % frames.size();
+            if (currentFrame < frames.size() - 1) {
+                currentFrame++;
+            }
         }
         void PrevFrame() {
-            currentFrame--;
-            currentFrame = currentFrame % frames.size();
+            if (currentFrame > 0) {
+                currentFrame--;
+            }
         }
         void Draw() {
             if (frames.size() > currentFrame && currentFrame >= 0) {
-                std::cout << frames.size() << "   " << currentFrame << "   ";
                 frames[currentFrame]->Draw();
             }
         }
@@ -114,7 +121,7 @@ private:
             }
         }
     };
-    class PreviousDS : public ButtonEvent {
+    class PrevDS : public ButtonEvent {
     public:
         void Activate() {
             std::map <std::string, DSContainer>::iterator it = namedContainers.begin();
@@ -130,6 +137,18 @@ private:
                     break;
                 }
             }
+        }
+    };
+    class NextFrame : public ButtonEvent {
+    public:
+        void Activate() {
+            namedContainers[currentDS].NextFrame();
+        }
+    };
+    class PrevFrame : public ButtonEvent {
+    public:
+        void Activate() {
+            namedContainers[currentDS].PrevFrame();
         }
     };
 #pragma endregion
@@ -177,7 +196,6 @@ private:
                 waitingForInput = false;
             }
             else {
-
                 //button Highlighted
                 tigrFill(screen, x, y, width, height, highlight);
                 if (waitingForInput == false) {
@@ -201,8 +219,10 @@ private:
     static void DrawUI() {
 
         DrawCenterText(screen->w / 2, 15, currentDS);
-        DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", new PreviousDS());
+        DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", new PrevDS());
         DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", new NextDS());
+        DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", new PrevFrame());
+        DrawButton(screen->w / 2 - 15 + 90, screen->h-35, 30, 30, "NEXT", new NextFrame());
     }
 
     static void DrawDS() {
