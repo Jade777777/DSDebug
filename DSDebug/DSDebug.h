@@ -54,16 +54,22 @@ private:
     class DSContainer {
     protected:
 
-        std::vector<DSFrame*> frames;
+        std::vector<DSFrame*> frames;//create destructor
         int currentFrame;
 
     public:
         DSContainer() {
             currentFrame = 0;
         }
+        ~DSContainer() {
+            for (auto frame : frames) {
+                delete frame;
+            }
+        }
         void SaveFrame(DSFrame* frame) {
             this->frames.emplace_back(frame);
         }
+        
         void NextFrame() {
             if (currentFrame < frames.size() - 1) {
                 currentFrame++;
@@ -106,6 +112,7 @@ private:
 #pragma region ButtonEvents
     class NextDS : public ButtonEvent {
     public:
+        
         void Activate() {
             std::map <std::string, DSContainer>::iterator it = namedContainers.begin();
             for (it; it != namedContainers.end(); ++it) {
@@ -173,7 +180,7 @@ private:
         tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
     }
 
-    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent* buttonEvent) {
+    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent) {
         TPixel neutral = tigrRGB(200, 200, 200);
         TPixel highlight = tigrRGB(230, 230, 230);
         TPixel selected = tigrRGB(170, 170, 170);
@@ -203,7 +210,7 @@ private:
                 if (waitingForInput == false) {
 
                     //ACTIVATE EVENT HERE
-                    buttonEvent->Activate();
+                    buttonEvent.Activate();
                 }
                 waitingForInput = true;
             }
@@ -221,10 +228,14 @@ private:
     static void DrawUI() {
 
         DrawCenterText(screen->w / 2, 15, currentDS);
-        DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", new PrevDS());
-        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", new NextDS());
-        DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", new PrevFrame());
-        DrawButton(screen->w / 2 - 15 + 90, screen->h-35, 30, 30, "NEXT", new NextFrame());
+        PrevDS x;
+        DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", x);
+        NextDS y;
+        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", y);
+        PrevFrame z;
+        DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", z);
+        NextFrame a;
+        DrawButton(screen->w / 2 - 15 + 90, screen->h-35, 30, 30, "NEXT", a);
     }
 
     static void DrawDS() {
@@ -263,8 +274,11 @@ public:
             DrawWindow();
         }
         tigrFree(screen);
+        atexit(DataCleanup);
     }
-
+    static void DataCleanup() {
+        std::cout << "Cleaning up all DSDebug data." << std::endl;
+    }
 
 };
 
