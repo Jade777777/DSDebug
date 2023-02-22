@@ -175,8 +175,9 @@ private:
     }
 
     static void DrawCenterText(int x, int y, std::string text) {
-        int textXCenter = text.size() * 3;
-        int textYcenter = 5; // assume there are no new lines
+        
+        int textXCenter = tigrTextWidth(tfont, text.c_str()) / 2;//text.size() * 4;
+        int textYcenter = tigrTextHeight(tfont, text.c_str()) / 2; // assume there are no new lines
         tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
     }
 
@@ -231,7 +232,7 @@ private:
         PrevDS x;
         DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", x);
         NextDS y;
-        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", y);
+        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXTCCSD", y);
         PrevFrame z;
         DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", z);
         NextFrame a;
