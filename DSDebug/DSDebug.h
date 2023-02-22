@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
-
+#include <algorithm>
 
 
 
@@ -29,9 +29,15 @@ private:
 
             //print out frames
             int offset = 0;
-
-            //iterate through each frame in frames vector
             for (auto const& c : data) {
+                //getting width of bar
+                int rectangleWidthMax = 580;
+                int frameMax = *std::max_element(data.begin(), data.end());
+                double barSizePercent = c / double(frameMax);
+                int barSize = rectangleWidthMax * barSizePercent;
+
+                //print bar
+                tigrFillRect(screen, 30, 100 + offset, barSize, 10, tigrRGB(255, 0, 0));
 
                 std::string iValue = std::to_string(c);
                 char const* iPrintValue = iValue.c_str();
@@ -39,12 +45,8 @@ private:
                 //print number
                 tigrPrint(screen, tfont, 20, 100 + offset, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
 
-                //print bar
-                tigrFill(screen, 30, 100 + offset, 10, 10, tigrRGB(255, 0, 0));
-
                 offset += 15;
             }
-
         }
     };
 
