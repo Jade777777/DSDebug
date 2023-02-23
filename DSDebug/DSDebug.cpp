@@ -4,6 +4,12 @@
 #include <map>
 #include "DSDebug.h"
 
+class f {
+public:
+    f() {
+
+    }
+};
 
 int main(int argc, char* argv[])
 {
@@ -23,14 +29,21 @@ int main(int argc, char* argv[])
     //Initialize array and DSDebug
     
     
-    testDS = { 2,3,4,5,6,7 };
-    DSDebug::Log(testDS, "2Test");
+    std::vector<bool> testBool = { true, true, true, false, false , false, false};
+    DSDebug::Log(testBool, "Bool Test");
 
-    testDS = { 2,3,4,5 };
-    DSDebug::Log(testDS, "3Test");
+    std::vector<double> testDouble = { 0.122,0.4444,0.2431324,0.23,0.45676457,0.9456,0.1555,0.9999 };
+    DSDebug::Log(testDouble, "1Double Test");
 
-    testDS = { 2,3, };
-    DSDebug::Log(testDS, "4Test");
+    std::vector<std::string> testString = { "b", "a", "c", "d","A", "Beach", "C", "D","aa", "bb", "cc", "dd" };
+    DSDebug::Log(testString, "String Test");
+
+
+
+    f a = f();
+    f b = f();
+    std::vector<f> testClass = { a, b, a};
+   // DSDebug::Log(testClass, "Class Test");
 
     testDS = { 2,3,4, };
     DSDebug::Log(testDS, "5Test");

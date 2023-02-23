@@ -3,11 +3,15 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <numeric>
 #include <algorithm>
+#include <type_traits>
+#include <concepts>
 
-
-
-
+template<typename T>
+concept arithmetic = std::integral<T> || std::floating_point<T>;
+template<typename T>
+concept totalyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
 
 class DSDebug
 {
@@ -18,11 +22,14 @@ private:
     };
 #pragma region DataStructures
 
-    class VectorFrame : public DSFrame {
+    //
+    template <typename T>
+        requires arithmetic<T>
+    class VectorNumFrame : public DSFrame {
     private:
-        std::vector<int> data;
+        std::vector<T> data;
     public:
-        VectorFrame(std::vector<int> data) {
+        VectorNumFrame(std::vector<T> data) {
             this->data = data;
         }
         void Draw() {
@@ -30,17 +37,21 @@ private:
             //print out frames
             int offset = 0;
             for (auto const& c : data) {
+                
                 //getting width of bar
                 int rectangleWidthMax = 580;
-                int frameMax = *std::max_element(data.begin(), data.end());
+                double frameMax = *std::max_element(data.begin(), data.end());
                 double barSizePercent = c / double(frameMax);
                 int barSize = rectangleWidthMax * barSizePercent;
 
+                std::cout << barSize<< "   " << std::to_string(c) << std::endl;
                 //print bar
                 tigrFillRect(screen, 30, 100 + offset, barSize, 10, tigrRGB(255, 0, 0));
 
                 std::string iValue = std::to_string(c);
+                
                 char const* iPrintValue = iValue.c_str();
+                
 
                 //print number
                 tigrPrint(screen, tfont, 20, 100 + offset, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
@@ -49,6 +60,72 @@ private:
             }
         }
     };
+
+
+    //
+    template<typename T>
+        requires totalyOrdered<T>
+    class VectorOrderedFrame : public DSFrame { 
+    private:
+        std::vector<T> data;
+
+        //method found here: https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
+        template <typename T>
+        std::vector<size_t> sort_indexes(const std::vector<T>& v) {
+
+            // initialize original index locations
+            std::vector<size_t> idx(v.size());
+            iota(idx.begin(), idx.end(), 0);
+
+            // sort indexes based on comparing values in v
+            // using std::stable_sort instead of std::sort
+            // to avoid unnecessary index re-orderings
+            // when v contains elements of equal values 
+            std::stable_sort(idx.begin(), idx.end(),
+                [&v](size_t i1, size_t i2) {return v[i1] < v[i2]; });
+            return idx;
+        }
+
+    public:
+        VectorOrderedFrame(std::vector<T> data) {
+            this->data = data;
+        }
+
+        void Draw() {
+            int offset = 15;
+            T max = data[0];
+
+            std::vector<size_t> sortedIndex = sort_indexes(data);
+            std::vector<int> indexSort(data.size());
+            
+
+            for (int val = 0; val < data.size(); val++) {
+                int i = sortedIndex[val];
+                T c = data[i];
+                
+                //getting width of bar
+                int rectangleWidthMax = 580;
+                int barSize = rectangleWidthMax * val/data.size();
+
+                ////print bar
+                tigrFillRect(screen, 30, 100 + (offset*i), barSize, 10, tigrRGB(255, 0, 0));
+
+                //determine name
+                std::string iValue = ""+c;// std::to_string(c);
+
+                std::cout << c << "   " << iValue << std::endl;
+
+                char const* iPrintValue = iValue.c_str();
+
+                //print number
+                tigrPrint(screen, tfont, 20, 100 + (offset*i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+
+                //offset += 15;
+            }
+        }
+    };
+
+
 
 #pragma endregion
     class DSContainer {
@@ -246,19 +323,17 @@ private:
 
 
 public:
-
+    
     void operator = (const DSDebug&) = delete;
 
-    static void Log(std::vector<int> dataStructure, std::string dsName) {
-
+    template<typename T>
+        requires arithmetic<T>
+    static void Log(std::vector<T> dataStructure, std::string dsName) {
         if (!namedContainers.contains(dsName)) {
-            
             namedContainers[dsName] = DSContainer();
             std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
         }
-
-        namedContainers[dsName].SaveFrame(new VectorFrame(dataStructure));
-
+        namedContainers[dsName].SaveFrame(new VectorNumFrame(dataStructure));
 
         bool displayNext = false;
         while (displayNext)// this will be used to implement a delay  between logs
@@ -268,6 +343,44 @@ public:
         }
 
     }
+    template<typename T>
+        requires totalyOrdered<T>
+    static void Log(std::vector<T> dataStructure, std::string dsName) {
+        if (!namedContainers.contains(dsName)) {
+            namedContainers[dsName] = DSContainer();
+            std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
+        }
+        namedContainers[dsName].SaveFrame(new VectorOrderedFrame(dataStructure));
+
+        bool displayNext = false;
+        while (displayNext)// this will be used to implement a delay  between logs
+        {
+            tigrUpdate(screen);// checks for user input
+            DrawWindow();
+        }
+
+    }
+
+
+
+    //template<typename T>
+    //    requires arithmetic<T>
+    //static void Log(std::vector<T> dataStructure, std::string dsName) {
+    //    if (!namedContainers.contains(dsName)) {
+    //        namedContainers[dsName] = DSContainer();
+    //        std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
+    //    }
+    //    namedContainers[dsName].SaveFrame(new VectorTFrame(dataStructure));
+
+    //    bool displayNext = false;
+    //    while (displayNext)// this will be used to implement a delay  between logs
+    //    {
+    //        tigrUpdate(screen);// checks for user input
+    //        DrawWindow();
+    //    }
+
+    //}
+
     static void End() {
         while (!tigrClosed(screen))
         {
