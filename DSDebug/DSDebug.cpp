@@ -35,10 +35,8 @@ int main(int argc, char* argv[])
     std::vector<double> testDouble = { 0.122,0.4444,0.2431324,0.23,0.45676457,0.9456,0.1555,0.9999 };
     DSDebug::Log(testDouble, "1Double Test");
 
-    std::vector<std::string> testString = { "b", "a", "c", "d","A", "Beach", "C", "D","aa", "bb", "cc", "dd" };
+    std::vector<std::string> testString = { "a","allspice", "b","basil", "c","corriander","cumin", "d","dill", "e", "epazote", "f", "fennel", "g", "garlic"};
     DSDebug::Log(testString, "String Test");
-
-
 
     f a = f();
     f b = f();
