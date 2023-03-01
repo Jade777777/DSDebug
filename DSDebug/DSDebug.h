@@ -157,6 +157,12 @@ private:
                 currentFrame--;
             }
         }
+        void SetFrame(int i) {
+            currentFrame = i;
+        }
+        int GetFrame() {
+            return currentFrame;
+        }
         void Draw() {
             if (frames.size() > currentFrame && currentFrame >= 0) {
                 frames[currentFrame]->Draw();
