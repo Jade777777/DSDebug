@@ -11,7 +11,7 @@
 template<typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
 template<typename T>
-concept totalyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
+concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
 
 class DSDebug
 {
@@ -26,8 +26,10 @@ private:
     template <typename T>
         requires arithmetic<T>
     class VectorNumFrame : public DSFrame {
+
     private:
         std::vector<T> data;
+    
     public:
         VectorNumFrame(std::vector<T> data) {
             this->data = data;
@@ -44,11 +46,10 @@ private:
                 double barSizePercent = c / double(frameMax);
                 int barSize = rectangleWidthMax * barSizePercent;
 
-                std::cout << barSize<< "   " << std::to_string(c) << std::endl;
                 //print bar
                 tigrFillRect(screen, 30, 100 + offset, barSize, 10, tigrRGB(255, 0, 0));
 
-                std::string iValue = std::to_string(c);
+                std::string iValue = "" + std::to_string(c);
                 
                 char const* iPrintValue = iValue.c_str();
                 
@@ -64,7 +65,7 @@ private:
 
     //
     template<typename T>
-        requires totalyOrdered<T>
+        requires totallyOrdered<T>
     class VectorOrderedFrame : public DSFrame { 
     private:
         std::vector<T> data;
@@ -113,14 +114,11 @@ private:
                 //determine name
                 std::string iValue = ""+c;// std::to_string(c);
 
-                std::cout << c << "   " << iValue << std::endl;
-
                 char const* iPrintValue = iValue.c_str();
 
                 //print number
                 tigrPrint(screen, tfont, 20, 100 + (offset*i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
 
-                //offset += 15;
             }
         }
     };
@@ -326,6 +324,7 @@ public:
     
     void operator = (const DSDebug&) = delete;
 
+
     template<typename T>
         requires arithmetic<T>
     static void Log(std::vector<T> dataStructure, std::string dsName) {
@@ -343,8 +342,11 @@ public:
         }
 
     }
+
+
+
     template<typename T>
-        requires totalyOrdered<T>
+        requires totallyOrdered<T>
     static void Log(std::vector<T> dataStructure, std::string dsName) {
         if (!namedContainers.contains(dsName)) {
             namedContainers[dsName] = DSContainer();
@@ -361,25 +363,6 @@ public:
 
     }
 
-
-
-    //template<typename T>
-    //    requires arithmetic<T>
-    //static void Log(std::vector<T> dataStructure, std::string dsName) {
-    //    if (!namedContainers.contains(dsName)) {
-    //        namedContainers[dsName] = DSContainer();
-    //        std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
-    //    }
-    //    namedContainers[dsName].SaveFrame(new VectorTFrame(dataStructure));
-
-    //    bool displayNext = false;
-    //    while (displayNext)// this will be used to implement a delay  between logs
-    //    {
-    //        tigrUpdate(screen);// checks for user input
-    //        DrawWindow();
-    //    }
-
-    //}
 
     static void End() {
         while (!tigrClosed(screen))
