@@ -279,6 +279,10 @@ private:
     }
 
     static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent) {
+        
+
+        width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
+        
         TPixel neutral = tigrRGB(200, 200, 200);
         TPixel highlight = tigrRGB(230, 230, 230);
         TPixel selected = tigrRGB(170, 170, 170);
@@ -287,6 +291,7 @@ private:
         int xCenter = x + (0.5 * width);
         int yCenter = y + (0.5 * height);
 
+        
 
         int mx;
         int my;
@@ -447,7 +452,7 @@ private:
         PrevDS x;
         DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", x);
         NextDS y;
-        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXTCCSD", y);
+        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", y);
         PrevFrame z;
         DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", z);
         NextFrame a;
