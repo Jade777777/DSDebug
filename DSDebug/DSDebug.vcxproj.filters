@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSDebug.cpp">
+    <ClCompile Include="TRex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tigr\tigr.c">
@@ -26,7 +26,7 @@
     <ClInclude Include="Tigr\tigr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DSDebug.h">
+    <ClInclude Include="TRex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

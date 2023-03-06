@@ -131,11 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DSDebug.cpp" />
+    <ClCompile Include="TRex.cpp" />
     <ClCompile Include="Tigr\tigr.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DSDebug.h" />
+    <ClInclude Include="TRex.h" />
     <ClInclude Include="Tigr\tigr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
