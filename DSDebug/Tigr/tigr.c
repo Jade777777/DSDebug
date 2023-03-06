@@ -1877,6 +1877,10 @@ TigrInternal* tigrInternal(Tigr* bmp) {
 
 int main(int argc, char* argv[]);
 
+void TestVectorT();
+
+void TestBubbleSort();
+
 #ifndef TIGR_DO_NOT_PRESERVE_WINDOW_POSITION
 HKEY tigrRegKey;
 #endif
