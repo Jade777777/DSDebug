@@ -25,7 +25,7 @@ static int prevx = 0, prevy = 0, prev = 0;
 
 
 
-class DSDebug
+class TRex
 {
 private:
     class DSFrame {
@@ -186,7 +186,7 @@ private:
 
 
 
-    DSDebug() {}
+    TRex() {}
 
     static Tigr* screen;
 
@@ -470,7 +470,7 @@ private:
 
 public:
     
-    void operator = (const DSDebug&) = delete;
+    void operator = (const TRex&) = delete;
 
 
     template<typename T>
@@ -527,7 +527,7 @@ public:
 
 };
 
-Tigr* DSDebug::screen = tigrWindow(640, 480, "DSDebug", 0);
-std::map <std::string, DSDebug::DSContainer> DSDebug::namedContainers{};
-std::string DSDebug::currentDS = "";
-bool DSDebug::waitingForInput = true;
+Tigr* TRex::screen = tigrWindow(640, 480, "DSDebug", 0);
+std::map <std::string, TRex::DSContainer> TRex::namedContainers{};
+std::string TRex::currentDS = "";
+bool TRex::waitingForInput = true;
