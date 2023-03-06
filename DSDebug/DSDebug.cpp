@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     f a = f();
     f b = f();
     std::vector<f> testClass = { a, b, a};
-   // DSDebug::Log(testClass, "Class Test");
+    //DSDebug::Log(testClass, "Class Test");
 
     testDS = { 2,3,4, };
     DSDebug::Log(testDS, "5Test");

@@ -11,7 +11,19 @@
 template<typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
 template<typename T>
-concept totalyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
+concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
+
+
+
+static bool initialSlider = true;
+static int sliderX;
+static int sliderY;
+static int prevx = 0, prevy = 0, prev = 0;
+
+
+
+
+
 
 class DSDebug
 {
@@ -26,8 +38,10 @@ private:
     template <typename T>
         requires arithmetic<T>
     class VectorNumFrame : public DSFrame {
+
     private:
         std::vector<T> data;
+    
     public:
         VectorNumFrame(std::vector<T> data) {
             this->data = data;
@@ -44,11 +58,10 @@ private:
                 double barSizePercent = c / double(frameMax);
                 int barSize = rectangleWidthMax * barSizePercent;
 
-                std::cout << barSize<< "   " << std::to_string(c) << std::endl;
                 //print bar
                 tigrFillRect(screen, 30, 100 + offset, barSize, 10, tigrRGB(255, 0, 0));
 
-                std::string iValue = std::to_string(c);
+                std::string iValue = "" + std::to_string(c);
                 
                 char const* iPrintValue = iValue.c_str();
                 
@@ -64,7 +77,7 @@ private:
 
     //
     template<typename T>
-        requires totalyOrdered<T>
+        requires totallyOrdered<T>
     class VectorOrderedFrame : public DSFrame { 
     private:
         std::vector<T> data;
@@ -113,14 +126,11 @@ private:
                 //determine name
                 std::string iValue = ""+c;// std::to_string(c);
 
-                std::cout << c << "   " << iValue << std::endl;
-
                 char const* iPrintValue = iValue.c_str();
 
                 //print number
                 tigrPrint(screen, tfont, 20, 100 + (offset*i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
 
-                //offset += 15;
             }
         }
     };
@@ -162,6 +172,10 @@ private:
         }
         int GetFrame() {
             return currentFrame;
+        }
+        int GetSize()
+        {
+            return frames.size();
         }
         void Draw() {
             if (frames.size() > currentFrame && currentFrame >= 0) {
@@ -266,6 +280,10 @@ private:
     }
 
     static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent) {
+        
+
+        width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
+        
         TPixel neutral = tigrRGB(200, 200, 200);
         TPixel highlight = tigrRGB(230, 230, 230);
         TPixel selected = tigrRGB(170, 170, 170);
@@ -274,6 +292,7 @@ private:
         int xCenter = x + (0.5 * width);
         int yCenter = y + (0.5 * height);
 
+        
 
         int mx;
         int my;
@@ -310,17 +329,137 @@ private:
 
     }
 
+
+    class SliderEvent
+    {
+    public:
+        virtual void Activate(int frame) = 0;
+    };
+
+#pragma region SliderEvent
+    class GoToSFrame : public SliderEvent
+    {
+    public:
+        void Activate(int frame)
+        {
+            namedContainers[currentDS].SetFrame(frame);
+        }
+    };
+#pragma endregion
+    
+
+    static void DrawSlider(int x, int y, int width, int height, SliderEvent& sliderEvent)
+    {
+        Tigr* backdrop = tigrBitmap(screen->w, screen->h);
+        Tigr* slider = tigrBitmap(screen->w, screen->h);
+
+        int barHeight = height * .5;
+        int barWidth = width * .5;
+        int innerBarHeight = barHeight * .95;
+        int innerBarWidth = barWidth * .95;
+        int barX = x - barWidth;
+        int barMaxX = barX + barWidth * 2;
+        int barY = y - barHeight;
+        int barMaxY = barY + barHeight * 2;
+
+        int sliderHW = (barHeight * 2) * 1.2;
+        int sliderRightMax = x + barWidth - (sliderHW / 2) - 1;
+        int sliderLeftMax = x - barWidth + (sliderHW / 2) - 1;
+        int sliderLength = sliderRightMax - sliderLeftMax;
+        int successfulClicks = 0;
+        int containerSize = namedContainers[currentDS].GetSize();
+
+
+        
+        // Sets slider knob to left of bar if not used yet
+        if (initialSlider)
+        {
+            sliderX = sliderLeftMax;
+            sliderY = y - 1;
+            initialSlider = false;
+        }
+
+        // Calculates and displays the current value of the slider
+        double sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
+        tigrPrint(backdrop, tfont, width * .5 - (tigrTextWidth(tfont, std::to_string(sliderValue).c_str()) / 2), height * .1, tigrRGB(23, 46, 89), std::to_string(sliderValue).c_str());
+        // Create slider bar
+        tigrFillRect(backdrop, barX, barY, (barWidth * 2), (barHeight * 2), tigrRGB(128, 128, 128));
+        tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
+        tigrFillRect(backdrop, -1, -1, 3, 3, tigrRGB(57, 234, 123));
+
+        // Lines for testing purposes
+        tigrLine(backdrop, 0, height / 2, width, height / 2, tigrRGB(84, 123, 38));
+        tigrLine(backdrop, width / 2, 0, width / 2, height, tigrRGB(84, 123, 38));
+
+        // Slider knob creation
+        tigrFillRect(slider, sliderX, sliderY, sliderHW, sliderHW, tigrRGB(0, 0, 0));
+
+        int mX, mY, mB;
+        tigrMouse(screen, &mX, &mY, &mB);
+        if (mB & 1)
+        {
+            // Moves slider if dragging
+            if (prev && (mX >= sliderX - (sliderHW / 2) && mX < sliderX + (sliderHW / 2)) && (mY >= sliderY && mY < sliderY + sliderHW) && (sliderX <= sliderRightMax) && (sliderX >= sliderLeftMax))
+            {
+                if (prevx < mX && sliderX != sliderRightMax)
+                {
+                    sliderX++;
+                    sliderEvent.Activate(sliderValue * containerSize);
+                }
+                else if (prevx > mX && sliderX != sliderLeftMax)
+                {
+                    sliderX--;
+                    sliderEvent.Activate(sliderValue * containerSize);
+                }
+            }
+            // Functionality that moves slider if clicking on bar
+            else if (prev && (mX >= barX && mX <= barMaxX) && (mY >= barY && mY <= barMaxY))
+            {
+                if (mX <= sliderRightMax && mX >= sliderLeftMax)
+                {
+                    sliderX = mX;
+                    sliderEvent.Activate(containerSize * sliderValue);
+                }
+                else if (mX < sliderLeftMax)
+                {
+                    sliderX = sliderLeftMax;
+                    sliderEvent.Activate(0);
+                }
+                else if (mX > sliderRightMax)
+                {
+                    sliderX = sliderRightMax;
+                    sliderEvent.Activate(containerSize - 1);
+                }
+            }
+            prevx = mX;
+            prevy = mY;
+            prev = 1;
+        }
+        else
+        {
+            prev = 0;
+        }
+
+        // Clips slider to the screen
+        tigrBlit(screen, backdrop, barX, barY, barX, barY, width, height);
+        tigrBlit(screen, slider, sliderX - 10, sliderY - 10, sliderX + 1, sliderY + 1, sliderHW - (sliderHW * .083333), sliderHW - (sliderHW * .083333));
+    }
+
+
+
     static void DrawUI() {
 
         DrawCenterText(screen->w / 2, 15, currentDS);
         PrevDS x;
         DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", x);
         NextDS y;
-        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXTCCSD", y);
+        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", y);
         PrevFrame z;
         DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", z);
         NextFrame a;
         DrawButton(screen->w / 2 - 15 + 90, screen->h-35, 30, 30, "NEXT", a);
+        GoToSFrame b;
+        DrawSlider(screen->w / 2, screen->h - 35, 100, 20, b);
     }
 
     static void DrawDS() {
@@ -332,6 +471,7 @@ private:
 public:
     
     void operator = (const DSDebug&) = delete;
+
 
     template<typename T>
         requires arithmetic<T>
@@ -350,8 +490,11 @@ public:
         }
 
     }
+
+
+
     template<typename T>
-        requires totalyOrdered<T>
+        requires totallyOrdered<T>
     static void Log(std::vector<T> dataStructure, std::string dsName) {
         if (!namedContainers.contains(dsName)) {
             namedContainers[dsName] = DSContainer();
@@ -368,25 +511,6 @@ public:
 
     }
 
-
-
-    //template<typename T>
-    //    requires arithmetic<T>
-    //static void Log(std::vector<T> dataStructure, std::string dsName) {
-    //    if (!namedContainers.contains(dsName)) {
-    //        namedContainers[dsName] = DSContainer();
-    //        std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
-    //    }
-    //    namedContainers[dsName].SaveFrame(new VectorTFrame(dataStructure));
-
-    //    bool displayNext = false;
-    //    while (displayNext)// this will be used to implement a delay  between logs
-    //    {
-    //        tigrUpdate(screen);// checks for user input
-    //        DrawWindow();
-    //    }
-
-    //}
 
     static void End() {
         while (!tigrClosed(screen))
