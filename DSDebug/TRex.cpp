@@ -4,12 +4,28 @@
 #include <map>
 #include "TRex.h"
 
+
 class f {
+private:
+    static int id;
+    int value;
 public:
     f() {
-
+        id++;
+        value = id;
     }
+    bool compareTo( f of)
+    {
+        return value== of.value;
+    }
+    bool operator < (f of)
+    {
+		return value < of.value;
+	}
 };
+
+
+
 
 
 std::vector<int> GenerateRandomInts(int length) {
@@ -39,7 +55,7 @@ void TestVectorT()
     f a = f();
     f b = f();
     std::vector<f> testClass = { a, b, a };
-    //DSDebug::Log(testClass, "Class Test");
+    TRex::Log(testClass, "Class Test");
 }
 
 void TestBubbleSort()
@@ -77,4 +93,7 @@ int main(int argc, char* argv[])
     TRex::End();
     return 0;
 }
+
+
+
 
