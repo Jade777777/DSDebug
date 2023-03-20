@@ -56,10 +56,6 @@ void TestVectorT()
     std::vector<std::string> testString = { "a","allspice", "b","basil", "c","corriander","cumin", "d","dill", "e", "epazote", "f", "fennel", "g", "garlic" };
     TRex::Log(testString, "String Test");
 
-    f a = f();
-    f b = f();
-    std::vector<f> testClass = { a, b, a };
-    TRex::Log(testClass, "Class Test");
 }
 
 void TestBubbleSort()
