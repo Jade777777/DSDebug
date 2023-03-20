@@ -5,24 +5,7 @@
 #include "TRex.h"
 
 
-class f {
-private:
-    static int id;
-    int value;
-public:
-    f() {
-        id++;
-        value = id;
-    }
-    bool compareTo( f of)
-    {
-        return value== of.value;
-    }
-    bool operator < (f of)
-    {
-		return value < of.value;
-	}
-};
+
 
 
 
