@@ -46,6 +46,10 @@ void TestVectorT()
     std::vector<bool> testBool = { true, true, true, false, false , false, false };
     TRex::Log(testBool, "Bool Test");
 
+    //Empty vector throws an error
+    std::vector<std::string> testEmpty = {};
+    TRex::Log(testEmpty, "Empty Test");
+
     std::vector<double> testDouble = { 0.122,0.4444,0.2431324,0.23,0.45676457,0.9456,0.1555,0.9999 };
     TRex::Log(testDouble, "1Double Test");
 
