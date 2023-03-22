@@ -31,12 +31,20 @@ void TestVectorT()
     std::vector<bool> testBool = { true, true, true, false, false , false, false };
     TRex::Log(testBool, "Bool Test");
 
-    //Empty vector throws an error
-    std::vector<std::string> testEmpty = {};
-    TRex::Log(testEmpty, "Empty Test");
+    //Empty vectors no longer throw an error
+    std::vector<std::string> testEmptyStr = {};
+    TRex::Log(testEmptyStr, "Empty Test Str");
 
-    std::vector<double> testFull = { 1,2,3,4,5,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 };
+    std::vector<int> testEmptyInt = {};
+    TRex::Log(testEmptyInt, "Empty Test Int");
+
+    std::vector<bool> testEmptyBool = {};
+    TRex::Log(testEmptyBool, "Empty Test Bool");
+
+    std::vector<int> testFull = { 1,2,3,4,5,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,30,7,7,7,7,7,7,7,7,7,7,7,7,7 };
     TRex::Log(testFull, "Full test");
+    std::vector<int> test26 = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26};
+    TRex::Log(test26, "Test26");
 
     std::vector<double> testDouble = { 0.122,0.4444,0.2431324,0.23,0.45676457,0.9456,0.1555,0.9999 };
     TRex::Log(testDouble, "1Double Test");

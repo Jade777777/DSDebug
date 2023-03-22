@@ -52,6 +52,7 @@ private:
             //print out frames
             int offset = 0;
             int barCounter = 0;
+            int remainderCount = 0;
             for (auto const& c : data) {
                 //Added to limit the amount of bars that can show on screen at once
                 if (barCounter <= 24) {
@@ -76,15 +77,27 @@ private:
                    
                 }
                 else {
-                    //Print elipses if there is too much on screen
-                    //TigrFont elipsesFont = tigrLoadFont();
-                    std::string elipses = "(...)";
-                    char const* elipsesPrint = elipses.c_str();
-                    tigrPrint(screen, tfont, 580, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);
+                    
+                    //used to check if there are remaining values offscreen
+                    remainderCount++;
+        
                 }
+
                 barCounter++;
-                
+
             }
+
+            //Print how many values remain offscreen if there are more than 25 values
+            if (remainderCount > 0) {
+                std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values";
+                char const* remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+
+                std::string addOnStr = "not being shown";
+                char const* addOnPrint = addOnStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
+            }
+            
         }
     };
 
@@ -126,6 +139,7 @@ private:
             std::vector<int> indexSort(data.size());
             
             int i;
+            int remainderCount = 0;
             for (int val = 0; val < data.size(); val++) {
                 //Added to limit the amount of bars that can show on screen at once
                 if (val <= 24) {
@@ -149,14 +163,23 @@ private:
                 }
                 else {
                     //Print elipses if there is too much on screen
-                    //TigrFont elipsesFont = tigrLoadFont();
-                    std::string elipses = "(...)";
+                    remainderCount++;
+                    /*std::string elipses = "(...)";
                     char const* elipsesPrint = elipses.c_str();
-                    tigrPrint(screen, tfont, 580, 50 + (offset * i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);
+                    tigrPrint(screen, tfont, 580, 50 + (offset * i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);*/
                 }
-                
-                
 
+            }
+
+            //Print how many values remain offscreen if there are more than 25 values
+            if (remainderCount > 0) {
+                std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values";
+                char const* remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + (offset*i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+
+                std::string addOnStr = "not being shown";
+                char const* addOnPrint = addOnStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + (offset * i) + 30, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
         }
     };
