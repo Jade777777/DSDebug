@@ -461,6 +461,7 @@ private:
 
     static void DrawUI()
     {
+        // Only shows frame traversal buttons if there are more than 1 frame
         bool frameTraversalVisible = true;
         if (namedContainers[currentDS].GetSize() <= 1)
             frameTraversalVisible = false;
