@@ -477,9 +477,12 @@ public:
     template<typename T>
         requires arithmetic<T>
     static void Log(std::vector<T> dataStructure, std::string dsName) {
-        if (!namedContainers.contains(dsName)) {
+        if (!namedContainers.contains(dsName) && dataStructure.size() > 0) {
             namedContainers[dsName] = DSContainer();
-            std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
+            std::cout << "New data structure found, instantiating " << dsName << std::endl;
+        }
+        else {
+            return;
         }
         namedContainers[dsName].SaveFrame(new VectorNumFrame(dataStructure));
 

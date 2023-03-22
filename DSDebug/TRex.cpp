@@ -35,6 +35,9 @@ void TestVectorT()
     std::vector<std::string> testEmpty = {};
     TRex::Log(testEmpty, "Empty Test");
 
+    std::vector<double> testFull = { 1,2,3,4,5,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 };
+    TRex::Log(testFull, "Full test");
+
     std::vector<double> testDouble = { 0.122,0.4444,0.2431324,0.23,0.45676457,0.9456,0.1555,0.9999 };
     TRex::Log(testDouble, "1Double Test");
 
