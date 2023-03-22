@@ -1,5 +1,5 @@
 #pragma once
-#include "tigr.h"
+#include "./Tigr/tigr.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
+
 
 template<typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
@@ -83,8 +84,8 @@ private:
         std::vector<T> data;
 
         //method found here: https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
-        template <typename T>
-        std::vector<size_t> sort_indexes(const std::vector<T>& v) {
+        template <typename S>
+        std::vector<size_t> sort_indexes(const std::vector<S>& v) {
 
             // initialize original index locations
             std::vector<size_t> idx(v.size());
