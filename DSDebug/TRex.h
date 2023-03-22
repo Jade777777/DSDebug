@@ -127,24 +127,35 @@ private:
             
 
             for (int val = 0; val < data.size(); val++) {
+                //Added to limit the amount of bars that can show on screen at once
+                if (val <= 24) {
+                    int i = sortedIndex[val];
+                    T c = data[i];
+
+                    //getting width of bar
+                    int rectangleWidthMax = 580;
+                    int barSize = rectangleWidthMax * val / data.size();
+
+                    ////print bar
+                    tigrFillRect(screen, 30, 50 + (offset * i), barSize, 10, tigrRGB(255, 0, 0));
+
+                    //determine name
+                    std::string iValue = "" + c;// std::to_string(c);
+
+                    char const* iPrintValue = iValue.c_str();
+
+                    //print number
+                    tigrPrint(screen, tfont, 20, 50 + (offset * i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+                }
+                else {
+                    //Print elipses if there is too much on screen
+                    //TigrFont elipsesFont = tigrLoadFont();
+                    std::string elipses = "(...)";
+                    char const* elipsesPrint = elipses.c_str();
+                    tigrPrint(screen, tfont, 580, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);
+                }
                 
-                int i = sortedIndex[val];
-                T c = data[i];
                 
-                //getting width of bar
-                int rectangleWidthMax = 580;
-                int barSize = rectangleWidthMax * val/data.size();
-
-                ////print bar
-                tigrFillRect(screen, 30, 100 + (offset*i), barSize, 10, tigrRGB(255, 0, 0));
-
-                //determine name
-                std::string iValue = ""+c;// std::to_string(c);
-
-                char const* iPrintValue = iValue.c_str();
-
-                //print number
-                tigrPrint(screen, tfont, 20, 100 + (offset*i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
 
             }
         }

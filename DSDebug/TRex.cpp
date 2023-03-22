@@ -41,7 +41,7 @@ void TestVectorT()
     std::vector<double> testDouble = { 0.122,0.4444,0.2431324,0.23,0.45676457,0.9456,0.1555,0.9999 };
     TRex::Log(testDouble, "1Double Test");
 
-    std::vector<std::string> testString = { "a","allspice", "b","basil", "c","corriander","cumin", "d","dill", "e", "epazote", "f", "fennel", "g", "garlic" };
+    std::vector<std::string> testString = { "a","allspice", "b","basil", "c","corriander","cumin", "d","dill", "e", "epazote", "f", "fennel", "g", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", "garlic", };
     TRex::Log(testString, "String Test");
 
     f a = f();
