@@ -125,11 +125,11 @@ private:
             std::vector<size_t> sortedIndex = sort_indexes(data);
             std::vector<int> indexSort(data.size());
             
-
+            int i;
             for (int val = 0; val < data.size(); val++) {
                 //Added to limit the amount of bars that can show on screen at once
                 if (val <= 24) {
-                    int i = sortedIndex[val];
+                    i = sortedIndex[val];
                     T c = data[i];
 
                     //getting width of bar
@@ -152,7 +152,7 @@ private:
                     //TigrFont elipsesFont = tigrLoadFont();
                     std::string elipses = "(...)";
                     char const* elipsesPrint = elipses.c_str();
-                    tigrPrint(screen, tfont, 580, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);
+                    tigrPrint(screen, tfont, 580, 50 + (offset * i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);
                 }
                 
                 
