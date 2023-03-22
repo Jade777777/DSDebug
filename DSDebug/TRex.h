@@ -401,10 +401,6 @@ private:
         tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
         tigrFillRect(backdrop, -1, -1, 3, 3, tigrRGB(57, 234, 123));
 
-        // Lines for testing purposes
-        tigrLine(backdrop, 0, height / 2, width, height / 2, tigrRGB(84, 123, 38));
-        tigrLine(backdrop, width / 2, 0, width / 2, height, tigrRGB(84, 123, 38));
-
         // Slider knob creation
         tigrFillRect(slider, sliderX, sliderY, sliderHW, sliderHW, tigrRGB(0, 0, 0));
 
