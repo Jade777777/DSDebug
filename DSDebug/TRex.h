@@ -11,25 +11,19 @@
 
 template<typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
-template<typename T>
+template <typename T>
 concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
-
-
 
 static bool initialSlider = true;
 static int sliderX;
 static int sliderY;
 static int prevx = 0, prevy = 0, prev = 0;
 
-
-
-
-
-
 class TRex
 {
 private:
-    class DSFrame {
+    class DSFrame
+    {
     public:
         virtual void Draw() = 0;
     };
@@ -38,18 +32,21 @@ private:
     //
     template <typename T>
         requires arithmetic<T>
-    class VectorNumFrame : public DSFrame {
+    class VectorNumFrame : public DSFrame
+    {
 
     private:
         std::vector<T> data;
-    
+
     public:
-        VectorNumFrame(std::vector<T> data) {
+        VectorNumFrame(std::vector<T> data)
+        {
             this->data = data;
         }
-        void Draw() {
+        void Draw()
+        {
 
-            //print out frames
+            // print out frames
             int offset = 0;
             int barCounter = 0;
             int remainderCount = 0;
@@ -101,11 +98,11 @@ private:
         }
     };
 
-
     //
-    template<typename T>
+    template <typename T>
         requires totallyOrdered<T>
-    class VectorOrderedFrame : public DSFrame { 
+    class VectorOrderedFrame : public DSFrame
+    {
     private:
         std::vector<T> data;
 
@@ -120,18 +117,21 @@ private:
             // sort indexes based on comparing values in v
             // using std::stable_sort instead of std::sort
             // to avoid unnecessary index re-orderings
-            // when v contains elements of equal values 
+            // when v contains elements of equal values
             std::stable_sort(idx.begin(), idx.end(),
-                [&v](size_t i1, size_t i2) {return v[i1] < v[i2]; });
+                             [&v](size_t i1, size_t i2)
+                             { return v[i1] < v[i2]; });
             return idx;
         }
 
     public:
-        VectorOrderedFrame(std::vector<T> data) {
+        VectorOrderedFrame(std::vector<T> data)
+        {
             this->data = data;
         }
 
-        void Draw() {
+        void Draw()
+        {
             int offset = 15;
             T max = data[0];
 
@@ -184,91 +184,100 @@ private:
         }
     };
 
-
-
 #pragma endregion
-    class DSContainer {
+    class DSContainer
+    {
     protected:
-
-        std::vector<DSFrame*> frames;//create destructor
+        std::vector<DSFrame *> frames; // create destructor
         int currentFrame;
 
     public:
-        DSContainer() {
+        DSContainer()
+        {
             currentFrame = 0;
         }
-        ~DSContainer() {
-            for (auto frame : frames) {
+        ~DSContainer()
+        {
+            for (auto frame : frames)
+            {
                 delete frame;
             }
         }
-        void SaveFrame(DSFrame* frame) {
+        void SaveFrame(DSFrame *frame)
+        {
             this->frames.emplace_back(frame);
         }
-        
-        void NextFrame() {
-            if (currentFrame < frames.size() - 1) {
+
+        void NextFrame()
+        {
+            if (currentFrame < frames.size() - 1)
+            {
                 currentFrame++;
             }
         }
-        void PrevFrame() {
-            if (currentFrame > 0) {
+        void PrevFrame()
+        {
+            if (currentFrame > 0)
+            {
                 currentFrame--;
             }
         }
-        void SetFrame(int i) {
+        void SetFrame(int i)
+        {
             currentFrame = i;
         }
-        int GetFrame() {
+        int GetFrame()
+        {
             return currentFrame;
         }
         int GetSize()
         {
             return frames.size();
         }
-        void Draw() {
-            if (frames.size() > currentFrame && currentFrame >= 0) {
+        void Draw()
+        {
+            if (frames.size() > currentFrame && currentFrame >= 0)
+            {
                 frames[currentFrame]->Draw();
             }
         }
     };
 
-
-
     TRex() {}
 
-    static Tigr* screen;
+    static Tigr *screen;
 
-    static std::map <std::string, DSContainer> namedContainers;
+    static std::map<std::string, DSContainer> namedContainers;
 
     static std::string currentDS;
 
     static bool waitingForInput;
 
-
-
-    class ButtonEvent {
+    class ButtonEvent
+    {
     public:
         virtual void Activate() = 0;
-
     };
 
-
-
 #pragma region ButtonEvents
-    class NextDS : public ButtonEvent {
+    class NextDS : public ButtonEvent
+    {
     public:
-        
-        void Activate() {
-            std::map <std::string, DSContainer>::iterator it = namedContainers.begin();
-            for (it; it != namedContainers.end(); ++it) {
-                if (it->first == currentDS) {// find the current data structuer
+        void Activate()
+        {
+            std::map<std::string, DSContainer>::iterator it = namedContainers.begin();
+            for (it; it != namedContainers.end(); ++it)
+            {
+                if (it->first == currentDS)
+                { // find the current data structuer
 
-                    it++;// get the next data structure
-                    if (it == namedContainers.end()) {
+                    it++; // get the next data structure
+                    if (it == namedContainers.end())
+                    {
                         currentDS = namedContainers.begin()->first;
                     }
-                    else {
+                    else
+                    {
                         currentDS = it->first;
                     }
                     break;
@@ -276,15 +285,20 @@ private:
             }
         }
     };
-    class PrevDS : public ButtonEvent {
+    class PrevDS : public ButtonEvent
+    {
     public:
-        void Activate() {
-            std::map <std::string, DSContainer>::iterator it = namedContainers.begin();
-            for (it; it != namedContainers.end(); ++it) {
-                if (it->first == currentDS) {//find the current data structure
+        void Activate()
+        {
+            std::map<std::string, DSContainer>::iterator it = namedContainers.begin();
+            for (it; it != namedContainers.end(); ++it)
+            {
+                if (it->first == currentDS)
+                { // find the current data structure
 
-                    //get the previous data structure
-                    if (it == namedContainers.begin()) {
+                    // get the previous data structure
+                    if (it == namedContainers.begin())
+                    {
                         it = namedContainers.end();
                     }
                     it--;
@@ -294,25 +308,29 @@ private:
             }
         }
     };
-    class NextFrame : public ButtonEvent {
+    class NextFrame : public ButtonEvent
+    {
     public:
-        void Activate() {
+        void Activate()
+        {
             namedContainers[currentDS].NextFrame();
-            
         }
     };
-    class PrevFrame : public ButtonEvent {
+    class PrevFrame : public ButtonEvent
+    {
     public:
-        void Activate() {
+        void Activate()
+        {
             namedContainers[currentDS].PrevFrame();
         }
     };
 #pragma endregion
 
+    static void DrawWindow()
+    {
 
-    static void DrawWindow() {
-
-        if (currentDS == "") {
+        if (currentDS == "")
+        {
             auto it = namedContainers.begin();
             currentDS = it->first;
         }
@@ -321,63 +339,62 @@ private:
         DrawDS();
     }
 
-    static void DrawCenterText(int x, int y, std::string text) {
-        
-        int textXCenter = tigrTextWidth(tfont, text.c_str()) / 2;//text.size() * 4;
+    static void DrawCenterText(int x, int y, std::string text)
+    {
+
+        int textXCenter = tigrTextWidth(tfont, text.c_str()) / 2;  // text.size() * 4;
         int textYcenter = tigrTextHeight(tfont, text.c_str()) / 2; // assume there are no new lines
         tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
     }
 
-    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent) {
-        
+    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent)
+    {
 
         width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
-        
+
         TPixel neutral = tigrRGB(200, 200, 200);
         TPixel highlight = tigrRGB(230, 230, 230);
         TPixel selected = tigrRGB(170, 170, 170);
 
-
         int xCenter = x + (0.5 * width);
         int yCenter = y + (0.5 * height);
 
-        
-
         int mx;
         int my;
-        int input;// 1 is left click
-
+        int input; // 1 is left click
 
         tigrMouse(screen, &mx, &my, &input);
 
-
-        if (mx >= x && mx <= x + width && my >= y && my <= y + height) {
-            if (input == 1) {
-                //button selected
+        if (mx >= x && mx <= x + width && my >= y && my <= y + height)
+        {
+            if (input == 1)
+            {
+                // button selected
                 tigrFill(screen, x, y, width, height, selected);
                 waitingForInput = false;
             }
-            else {
-                //button Highlighted
+            else
+            {
+                // button Highlighted
                 tigrFill(screen, x, y, width, height, highlight);
-                if (waitingForInput == false) {
+                if (waitingForInput == false)
+                {
 
-                    //ACTIVATE EVENT HERE
+                    // ACTIVATE EVENT HERE
                     buttonEvent.Activate();
                 }
                 waitingForInput = true;
             }
         }
-        else {
-            //button at neutral
+        else
+        {
+            // button at neutral
             tigrFill(screen, x, y, width, height, neutral);
-            //waitingForInput = true;
+            // waitingForInput = true;
         }
 
         DrawCenterText(xCenter, yCenter, text);
-
     }
-
 
     class SliderEvent
     {
@@ -395,12 +412,11 @@ private:
         }
     };
 #pragma endregion
-    
 
-    static void DrawSlider(int x, int y, int width, int height, SliderEvent& sliderEvent)
+    static void DrawSlider(int x, int y, int width, int height, SliderEvent &sliderEvent)
     {
-        Tigr* backdrop = tigrBitmap(screen->w, screen->h);
-        Tigr* slider = tigrBitmap(screen->w, screen->h);
+        Tigr *backdrop = tigrBitmap(screen->w, screen->h);
+        Tigr *slider = tigrBitmap(screen->w, screen->h);
 
         int barHeight = height * .5;
         int barWidth = width * .5;
@@ -418,8 +434,6 @@ private:
         int successfulClicks = 0;
         int containerSize = namedContainers[currentDS].GetSize();
 
-
-        
         // Sets slider knob to left of bar if not used yet
         if (initialSlider)
         {
@@ -435,10 +449,6 @@ private:
         tigrFillRect(backdrop, barX, barY, (barWidth * 2), (barHeight * 2), tigrRGB(128, 128, 128));
         tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
         tigrFillRect(backdrop, -1, -1, 3, 3, tigrRGB(57, 234, 123));
-
-        // Lines for testing purposes
-        tigrLine(backdrop, 0, height / 2, width, height / 2, tigrRGB(84, 123, 38));
-        tigrLine(backdrop, width / 2, 0, width / 2, height, tigrRGB(84, 123, 38));
 
         // Slider knob creation
         tigrFillRect(slider, sliderX, sliderY, sliderHW, sliderHW, tigrRGB(0, 0, 0));
@@ -494,35 +504,37 @@ private:
         tigrBlit(screen, slider, sliderX - 10, sliderY - 10, sliderX + 1, sliderY + 1, sliderHW - (sliderHW * .083333), sliderHW - (sliderHW * .083333));
     }
 
-
-
-    static void DrawUI() {
-
+    static void DrawUI()
+    {
+        // Only shows frame traversal buttons if there are more than 1 frame
+        bool frameTraversalVisible = true;
+        if (namedContainers[currentDS].GetSize() <= 1)
+            frameTraversalVisible = false;
         DrawCenterText(screen->w / 2, 15, currentDS);
         PrevDS x;
         DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", x);
         NextDS y;
         DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", y);
         PrevFrame z;
-        DrawButton(screen->w / 2 - 15 - 90, screen->h-35, 30, 30, "PREV.", z);
         NextFrame a;
-        DrawButton(screen->w / 2 - 15 + 90, screen->h-35, 30, 30, "NEXT", a);
         GoToSFrame b;
-        DrawSlider(screen->w / 2, screen->h - 35, 100, 20, b);
+        if (frameTraversalVisible)
+        {
+            DrawButton(screen->w / 2 - 15 - 90, screen->h - 35, 30, 30, "PREV.", z);
+            DrawButton(screen->w / 2 - 15 + 90, screen->h - 35, 30, 30, "NEXT", a);
+            DrawSlider(screen->w / 2, screen->h - 35, 100, 20, b);
+        }
     }
 
-    static void DrawDS() {
+    static void DrawDS()
+    {
         namedContainers[currentDS].Draw();
     }
 
-
-
 public:
-    
-    void operator = (const TRex&) = delete;
+    void operator=(const TRex &) = delete;
 
-
-    template<typename T>
+    template <typename T>
         requires arithmetic<T>
     static void Log(std::vector<T> dataStructure, std::string dsName) {
         if (!namedContainers.contains(dsName) && dataStructure.size() > 0) {
@@ -535,55 +547,54 @@ public:
         namedContainers[dsName].SaveFrame(new VectorNumFrame(dataStructure));
 
         bool displayNext = false;
-        while (displayNext)// this will be used to implement a delay  between logs
+        while (displayNext) // this will be used to implement a delay  between logs
         {
-            tigrUpdate(screen);// checks for user input
+            tigrUpdate(screen); // checks for user input
             DrawWindow();
         }
-
     }
 
-
-
-    template<typename T>
+    template <typename T>
         requires totallyOrdered<T>
-    static void Log(std::vector<T> dataStructure, std::string dsName) {
-        if (!namedContainers.contains(dsName) && dataStructure.size() > 0) {
+    static void Log(std::vector<T> dataStructure, std::string dsName)
+    {
+        if (!namedContainers.contains(dsName) && dataStructure.size() > 0)
+        {
             namedContainers[dsName] = DSContainer();
             std::cout << "New data structure found, instantiating " << dsName << std::endl;
         }
-        else {
+        else
+        {
             return;
         }
-        
+
         namedContainers[dsName].SaveFrame(new VectorOrderedFrame(dataStructure));
 
         bool displayNext = false;
-        while (displayNext)// this will be used to implement a delay  between logs
+        while (displayNext) // this will be used to implement a delay  between logs
         {
-            tigrUpdate(screen);// checks for user input
+            tigrUpdate(screen); // checks for user input
             DrawWindow();
         }
-
     }
 
-
-    static void End() {
+    static void End()
+    {
         while (!tigrClosed(screen))
         {
-            tigrUpdate(screen);// checks for user input
+            tigrUpdate(screen); // checks for user input
             DrawWindow();
         }
         tigrFree(screen);
         atexit(DataCleanup);
     }
-    static void DataCleanup() {
+    static void DataCleanup()
+    {
         std::cout << "Cleaning up all DSDebug data." << std::endl;
     }
-
 };
 
-Tigr* TRex::screen = tigrWindow(640, 480, "DSDebug", 0);
-std::map <std::string, TRex::DSContainer> TRex::namedContainers{};
+Tigr *TRex::screen = tigrWindow(640, 480, "DSDebug", 0);
+std::map<std::string, TRex::DSContainer> TRex::namedContainers{};
 std::string TRex::currentDS = "";
 bool TRex::waitingForInput = true;
