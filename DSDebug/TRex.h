@@ -1,5 +1,5 @@
 #pragma once
-#include "tigr.h"
+#include "./Tigr/tigr.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
+
 
 template<typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
@@ -50,27 +51,53 @@ private:
 
             //print out frames
             int offset = 0;
+            int barCounter = 0;
+            int remainderCount = 0;
             for (auto const& c : data) {
-                
-                //getting width of bar
-                int rectangleWidthMax = 580;
-                double frameMax = *std::max_element(data.begin(), data.end());
-                double barSizePercent = c / double(frameMax);
-                int barSize = rectangleWidthMax * barSizePercent;
+                //Added to limit the amount of bars that can show on screen at once
+                if (barCounter <= 24) {
+                    //getting width of bar
+                    int rectangleWidthMax = 580;
+                    double frameMax = *std::max_element(data.begin(), data.end());
+                    double barSizePercent = c / double(frameMax);
+                    int barSize = rectangleWidthMax * barSizePercent;
 
-                //print bar
-                tigrFillRect(screen, 30, 100 + offset, barSize, 10, tigrRGB(255, 0, 0));
+                    //print bar
+                    tigrFillRect(screen, 30, 50 + offset, barSize, 10, tigrRGB(255, 0, 0));
 
-                std::string iValue = "" + std::to_string(c);
-                
-                char const* iPrintValue = iValue.c_str();
-                
+                    std::string iValue = "" + std::to_string(c);
 
-                //print number
-                tigrPrint(screen, tfont, 20, 100 + offset, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+                    char const* iPrintValue = iValue.c_str();
 
-                offset += 15;
+
+                    //print number
+                    tigrPrint(screen, tfont, 20, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+
+                    offset += 15;
+                   
+                }
+                else {
+                    
+                    //used to check if there are remaining values offscreen
+                    remainderCount++;
+        
+                }
+
+                barCounter++;
+
             }
+
+            //Print how many values remain offscreen if there are more than 25 values
+            if (remainderCount > 0) {
+                std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values";
+                char const* remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+
+                std::string addOnStr = "not being shown";
+                char const* addOnPrint = addOnStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
+            }
+            
         }
     };
 
@@ -83,8 +110,8 @@ private:
         std::vector<T> data;
 
         //method found here: https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
-        template <typename T>
-        std::vector<size_t> sort_indexes(const std::vector<T>& v) {
+        template <typename S>
+        std::vector<size_t> sort_indexes(const std::vector<S>& v) {
 
             // initialize original index locations
             std::vector<size_t> idx(v.size());
@@ -111,26 +138,48 @@ private:
             std::vector<size_t> sortedIndex = sort_indexes(data);
             std::vector<int> indexSort(data.size());
             
-
+            int i;
+            int remainderCount = 0;
             for (int val = 0; val < data.size(); val++) {
-                int i = sortedIndex[val];
-                T c = data[i];
-                
-                //getting width of bar
-                int rectangleWidthMax = 580;
-                int barSize = rectangleWidthMax * val/data.size();
+                //Added to limit the amount of bars that can show on screen at once
+                if (val <= 24) {
+                    i = sortedIndex[val];
+                    T c = data[i];
 
-                ////print bar
-                tigrFillRect(screen, 30, 100 + (offset*i), barSize, 10, tigrRGB(255, 0, 0));
+                    //getting width of bar
+                    int rectangleWidthMax = 580;
+                    int barSize = rectangleWidthMax * val / data.size();
 
-                //determine name
-                std::string iValue = ""+c;// std::to_string(c);
+                    ////print bar
+                    tigrFillRect(screen, 30, 50 + (offset * i), barSize, 10, tigrRGB(255, 0, 0));
 
-                char const* iPrintValue = iValue.c_str();
+                    //determine name
+                    std::string iValue = "" + c;// std::to_string(c);
 
-                //print number
-                tigrPrint(screen, tfont, 20, 100 + (offset*i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+                    char const* iPrintValue = iValue.c_str();
 
+                    //print number
+                    tigrPrint(screen, tfont, 20, 50 + (offset * i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
+                }
+                else {
+                    //Print elipses if there is too much on screen
+                    remainderCount++;
+                    /*std::string elipses = "(...)";
+                    char const* elipsesPrint = elipses.c_str();
+                    tigrPrint(screen, tfont, 580, 50 + (offset * i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);*/
+                }
+
+            }
+
+            //Print how many values remain offscreen if there are more than 25 values
+            if (remainderCount > 0) {
+                std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values";
+                char const* remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + (offset*i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+
+                std::string addOnStr = "not being shown";
+                char const* addOnPrint = addOnStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + (offset * i) + 30, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
         }
     };
@@ -476,9 +525,12 @@ public:
     template<typename T>
         requires arithmetic<T>
     static void Log(std::vector<T> dataStructure, std::string dsName) {
-        if (!namedContainers.contains(dsName)) {
+        if (!namedContainers.contains(dsName) && dataStructure.size() > 0) {
             namedContainers[dsName] = DSContainer();
-            std::cout << "New data strucuter found, instantiating " << dsName << std::endl;
+            std::cout << "New data structure found, instantiating " << dsName << std::endl;
+        }
+        else {
+            return;
         }
         namedContainers[dsName].SaveFrame(new VectorNumFrame(dataStructure));
 
