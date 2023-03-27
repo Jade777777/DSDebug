@@ -541,14 +541,15 @@ public:
         requires arithmetic<T>
     static void Log(std::vector<T> dataStructure, std::string dsName)
     {
+
+
         if (!namedContainers.contains(dsName))
         {
+ 
             namedContainers[dsName] = DSContainer();
             std::cout << "New data structure found, instantiating " << dsName << std::endl;
         }
-        else {
-            return;
-        }
+
         namedContainers[dsName].SaveFrame(new VectorNumFrame(dataStructure));
 
         bool displayNext = false;
