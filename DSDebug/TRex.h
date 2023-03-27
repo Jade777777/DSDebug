@@ -230,6 +230,7 @@ private:
             if (frames.size() > currentFrame && currentFrame >= 0) {
                 frames[currentFrame]->Draw();
             }
+           
         }
     };
 
@@ -392,6 +393,7 @@ private:
         void Activate(int frame)
         {
             namedContainers[currentDS].SetFrame(frame);
+            std::cout << namedContainers[currentDS].GetSize() << std::endl;
         }
     };
 #pragma endregion
@@ -513,6 +515,7 @@ private:
 
     static void DrawDS() {
         namedContainers[currentDS].Draw();
+        
     }
 
 
@@ -524,8 +527,10 @@ public:
 
     template<typename T>
         requires arithmetic<T>
-    static void Log(std::vector<T> dataStructure, std::string dsName) {
-        if (!namedContainers.contains(dsName) && dataStructure.size() > 0) {
+    static void Log(std::vector<T> dataStructure, std::string dsName)
+    {
+        if (!namedContainers.contains(dsName))
+        {
             namedContainers[dsName] = DSContainer();
             std::cout << "New data structure found, instantiating " << dsName << std::endl;
         }
@@ -539,6 +544,7 @@ public:
         {
             tigrUpdate(screen);// checks for user input
             DrawWindow();
+            
         }
 
     }
