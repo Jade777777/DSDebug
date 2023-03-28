@@ -445,7 +445,6 @@ private:
         // Sets slider knob to left of bar if not used yet
         if (initialSlider)
         {
-            // sliderX = sliderLeftMax;
             sliderX = ((double)namedContainers[currentDS].GetFrame() / (double)containerSize) * (double)sliderLength + (double)sliderLeftMax;
             sliderY = y - 1;
             initialSlider = false;
@@ -459,7 +458,6 @@ private:
 
         // Calculates the current value of the slider
         double sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
-        std::cout << sliderValue << std::endl;
         // Create slider bar
         tigrFillRect(backdrop, barX, barY, (barWidth * 2), (barHeight * 2), tigrRGB(128, 128, 128));
         tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
