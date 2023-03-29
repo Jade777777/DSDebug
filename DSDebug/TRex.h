@@ -415,8 +415,10 @@ private:
     public:
         void Activate(int frame)
         {
+            // TODO: delete this line
+            // std::cout << "Frame: " << frame << std::endl;
             namedContainers[currentDS].SetFrame(frame);
-            std::cout << namedContainers[currentDS].GetSize() << std::endl;
+            // std::cout << namedContainers[currentDS].GetSize() << std::endl;
         }
     };
 #pragma endregion
@@ -457,7 +459,11 @@ private:
         }
 
         // Calculates the current value of the slider
-        double sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
+        // TODO: Delete this comment
+        // double sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
+        double sliderValue;
+        // TODO: Delete this comment
+        // std::cout << "Slider Value: " << sliderValue << std::endl;
         // Create slider bar
         tigrFillRect(backdrop, barX, barY, (barWidth * 2), (barHeight * 2), tigrRGB(128, 128, 128));
         tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
@@ -476,20 +482,35 @@ private:
                 if (prevx < mX && sliderX != sliderRightMax)
                 {
                     sliderX++;
+                    sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
+                    // sliderEvent.Activate(sliderValue * (containerSize + 1));
+                    // TODO: Delete these comments
+                    // std::cout << "Slider X: " << sliderX << std::endl;
+                    // std::cout << "Slider Value: " << sliderValue << std::endl;
                     sliderEvent.Activate(sliderValue * containerSize);
                 }
                 else if (prevx > mX && sliderX != sliderLeftMax)
                 {
                     sliderX--;
+                    sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
+                    // sliderEvent.Activate(sliderValue * (containerSize + 1));
+                    // TODO: Delete these comments
+                    // std::cout << "Slider X: " << sliderX << std::endl;
+                    // std::cout << "Slider Value: " << sliderValue << std::endl;
                     sliderEvent.Activate(sliderValue * containerSize);
                 }
             }
             // Functionality that moves slider if clicking on bar
-            else if (prev && (mX >= barX && mX <= barMaxX) && (mY >= barY && mY <= barMaxY))
+            else if (prev && (mX >= barX && mX <= barMaxX) && (mY >= barY && mY <= barMaxY) && (mX <= sliderX || mX >= sliderX))
             {
                 if (mX <= sliderRightMax && mX >= sliderLeftMax)
                 {
                     sliderX = mX;
+                    // sliderEvent.Activate((containerSize + 1) * sliderValue);
+                    sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
+                    // TODO: Delete these comments
+                    // std::cout << "Slider X: " << sliderX << std::endl;
+                    // std::cout << "Slider Value: " << sliderValue << std::endl;
                     sliderEvent.Activate(containerSize * sliderValue);
                 }
                 else if (mX < sliderLeftMax)
