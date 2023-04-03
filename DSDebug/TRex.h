@@ -423,6 +423,10 @@ private:
 
     static void DrawSlider(int x, int y, int width, int height, SliderEvent &sliderEvent)
     {
+        TPixel neutral = tigrRGB(48, 45, 102);
+        TPixel highlight = tigrRGB(81, 76, 173);
+
+
         Tigr *backdrop = tigrBitmap(screen->w, screen->h);
         Tigr *slider = tigrBitmap(screen->w, screen->h);
 
@@ -452,14 +456,12 @@ private:
 
         // Calculates and displays the current value of the slider
         double sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
-        tigrPrint(backdrop, tfont, width * .5 - (tigrTextWidth(tfont, std::to_string(sliderValue).c_str()) / 2), height * .1, tigrRGB(23, 46, 89), std::to_string(sliderValue).c_str());
+
         // Create slider bar
-        tigrFillRect(backdrop, barX, barY, (barWidth * 2), (barHeight * 2), tigrRGB(128, 128, 128));
-        tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
-        tigrFillRect(backdrop, -1, -1, 3, 3, tigrRGB(57, 234, 123));
+        tigrRect(screen, barX, barY, (barWidth * 2), (barHeight * 2), neutral);
 
         // Slider knob creation
-        tigrFillRect(slider, sliderX, sliderY, sliderHW, sliderHW, tigrRGB(0, 0, 0));
+        tigrFill(screen, sliderX-(0.35*sliderHW), sliderY-(0.35*sliderHW)+2, sliderHW*0.7, sliderHW*0.7-1, highlight);
 
         int mX, mY, mB;
         tigrMouse(screen, &mX, &mY, &mB);
@@ -507,9 +509,6 @@ private:
             prev = 0;
         }
 
-        // Clips slider to the screen
-        tigrBlit(screen, backdrop, barX, barY, barX, barY, width, height);
-        tigrBlit(screen, slider, sliderX - 10, sliderY - 10, sliderX + 1, sliderY + 1, sliderHW - (sliderHW * .083333), sliderHW - (sliderHW * .083333));
     }
 
     static void DrawUI()
@@ -528,9 +527,9 @@ private:
         GoToSFrame b;
         if (frameTraversalVisible)
         {
-            DrawButton(screen->w / 2 - 15 - 90, screen->h - 35, 30, 30, "PREV.", z);
-            DrawButton(screen->w / 2 - 15 + 90, screen->h - 35, 30, 30, "NEXT", a);
-            DrawSlider(screen->w / 2, screen->h - 35, 100, 20, b);
+            DrawButton(screen->w / 2 - 15 - 150-20, screen->h - 35, 30, 30, "PREV.", z);
+            DrawButton(screen->w / 2 - 15 + 150+20, screen->h - 35, 30, 30, "NEXT", a);
+            DrawSlider(screen->w / 2+2, screen->h - 35+15, 300, 30, b);
         }
     }
 
