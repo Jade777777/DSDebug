@@ -60,7 +60,7 @@ private:
                     int barSize = rectangleWidthMax * barSizePercent;
 
                     //print bar
-                    tigrFillRect(screen, 30, 50 + offset, barSize, 10, tigrRGB(255, 0, 0));
+                    tigrFillRect(screen, 17, 47 + offset, barSize, 16, tigrRGB(255, 0, 0));
 
                     std::string iValue = "" + std::to_string(c);
 
@@ -151,7 +151,7 @@ private:
                     int barSize = rectangleWidthMax * val / data.size();
 
                     ////print bar
-                    tigrFillRect(screen, 30, 50 + (offset * i), barSize, 10, tigrRGB(255, 0, 0));
+                    tigrFillRect(screen, 17, 47 + (offset * i), barSize, 16, tigrRGB(255, 0, 0));
 
                     //determine name
                     std::string iValue = "" + c;// std::to_string(c);
