@@ -531,11 +531,14 @@ private:
         bool frameTraversalVisible = true;
         if (namedContainers[currentDS].GetSize() <= 1)
             frameTraversalVisible = false;
-        DrawCenterText(screen->w / 2, 15, currentDS);
+        DrawCenterText(screen->w / 2+2, 20, currentDS);
+        int rw = 300;
+        tigrRect(screen, (screen->w - rw)/ 2+2, 5, rw, 30, tigrRGB(48, 45, 102));
+
         PrevDS x;
-        DrawButton(screen->w / 2 - 15 - 90, 5, 30, 30, "PREV.", x);
+        DrawButton(screen->w / 2 - 15 - 150 - 20, 5, 30, 30, "PREV.", x);
         NextDS y;
-        DrawButton(screen->w / 2 - 15 + 90, 5, 30, 30, "NEXT", y);
+        DrawButton(screen->w / 2 - 15 + 150 + 20, 5, 30, 30, "NEXT", y);
         PrevFrame z;
         NextFrame a;
         GoToSFrame b;
