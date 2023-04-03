@@ -8,13 +8,13 @@
 #include <type_traits>
 #include <concepts>
 
-
-template<typename T>
+template <typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
 template <typename T>
 concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
 
 static bool initialSlider = true;
+static bool updateSlider = false;
 static int sliderX;
 static int sliderY;
 static int prevx = 0, prevy = 0, prev = 0;
@@ -50,10 +50,12 @@ private:
             int offset = 0;
             int barCounter = 0;
             int remainderCount = 0;
-            for (auto const& c : data) {
-                //Added to limit the amount of bars that can show on screen at once
-                if (barCounter <= 24) {
-                    //getting width of bar
+            for (auto const &c : data)
+            {
+                // Added to limit the amount of bars that can show on screen at once
+                if (barCounter <= 24)
+                {
+                    // getting width of bar
                     int rectangleWidthMax = 580;
                     double frameMax = *std::max_element(data.begin(), data.end());
                     double barSizePercent = c / double(frameMax);
@@ -64,37 +66,34 @@ private:
 
                     std::string iValue = "" + std::to_string(c);
 
-                    char const* iPrintValue = iValue.c_str();
+                    char const *iPrintValue = iValue.c_str();
 
-
-                    //print number
+                    // print number
                     tigrPrint(screen, tfont, 20, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
 
                     offset += 15;
-                   
                 }
-                else {
-                    
-                    //used to check if there are remaining values offscreen
+                else
+                {
+
+                    // used to check if there are remaining values offscreen
                     remainderCount++;
-        
                 }
 
                 barCounter++;
-
             }
 
-            //Print how many values remain offscreen if there are more than 25 values
-            if (remainderCount > 0) {
+            // Print how many values remain offscreen if there are more than 25 values
+            if (remainderCount > 0)
+            {
                 std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values";
-                char const* remainderPrint = remainderStr.c_str();
+                char const *remainderPrint = remainderStr.c_str();
                 tigrPrint(screen, tfont, 450, 50 + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
 
                 std::string addOnStr = "not being shown";
-                char const* addOnPrint = addOnStr.c_str();
+                char const *addOnPrint = addOnStr.c_str();
                 tigrPrint(screen, tfont, 450, 50 + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
-            
         }
     };
 
@@ -106,9 +105,10 @@ private:
     private:
         std::vector<T> data;
 
-        //method found here: https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
+        // method found here: https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
         template <typename S>
-        std::vector<size_t> sort_indexes(const std::vector<S>& v) {
+        std::vector<size_t> sort_indexes(const std::vector<S> &v)
+        {
 
             // initialize original index locations
             std::vector<size_t> idx(v.size());
@@ -137,48 +137,51 @@ private:
 
             std::vector<size_t> sortedIndex = sort_indexes(data);
             std::vector<int> indexSort(data.size());
-            
+
             int i;
             int remainderCount = 0;
-            for (int val = 0; val < data.size(); val++) {
-                //Added to limit the amount of bars that can show on screen at once
-                if (val <= 24) {
+            for (int val = 0; val < data.size(); val++)
+            {
+                // Added to limit the amount of bars that can show on screen at once
+                if (val <= 24)
+                {
                     i = sortedIndex[val];
                     T c = data[i];
 
-                    //getting width of bar
+                    // getting width of bar
                     int rectangleWidthMax = 580;
                     int barSize = rectangleWidthMax * val / data.size();
 
                     ////print bar
                     tigrFillRect(screen, 17, 47 + (offset * i), barSize, 16, tigrRGB(48, 45, 102));
 
-                    //determine name
-                    std::string iValue = "" + c;// std::to_string(c);
+                    // determine name
+                    std::string iValue = "" + c; // std::to_string(c);
 
-                    char const* iPrintValue = iValue.c_str();
+                    char const *iPrintValue = iValue.c_str();
 
-                    //print number
+                    // print number
                     tigrPrint(screen, tfont, 20, 50 + (offset * i), tigrRGB(0xFF, 0xFF, 0xFF), iPrintValue);
                 }
-                else {
-                    //Print elipses if there is too much on screen
+                else
+                {
+                    // Print elipses if there is too much on screen
                     remainderCount++;
                     /*std::string elipses = "(...)";
                     char const* elipsesPrint = elipses.c_str();
                     tigrPrint(screen, tfont, 580, 50 + (offset * i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), elipsesPrint);*/
                 }
-
             }
 
-            //Print how many values remain offscreen if there are more than 25 values
-            if (remainderCount > 0) {
+            // Print how many values remain offscreen if there are more than 25 values
+            if (remainderCount > 0)
+            {
                 std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values";
-                char const* remainderPrint = remainderStr.c_str();
-                tigrPrint(screen, tfont, 450, 50 + (offset*i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+                char const *remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 450, 50 + (offset * i) + 15, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
 
                 std::string addOnStr = "not being shown";
-                char const* addOnPrint = addOnStr.c_str();
+                char const *addOnPrint = addOnStr.c_str();
                 tigrPrint(screen, tfont, 450, 50 + (offset * i) + 30, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
         }
@@ -240,7 +243,6 @@ private:
             {
                 frames[currentFrame]->Draw();
             }
-           
         }
     };
 
@@ -281,6 +283,7 @@ private:
                     {
                         currentDS = it->first;
                     }
+                    initialSlider = true;
                     break;
                 }
             }
@@ -304,6 +307,7 @@ private:
                     }
                     it--;
                     currentDS = it->first;
+                    initialSlider = true;
                     break;
                 }
             }
@@ -315,6 +319,7 @@ private:
         void Activate()
         {
             namedContainers[currentDS].NextFrame();
+            updateSlider = true;
         }
     };
     class PrevFrame : public ButtonEvent
@@ -323,6 +328,7 @@ private:
         void Activate()
         {
             namedContainers[currentDS].PrevFrame();
+            updateSlider = true;
         }
     };
 #pragma endregion
@@ -416,7 +422,6 @@ private:
         void Activate(int frame)
         {
             namedContainers[currentDS].SetFrame(frame);
-            std::cout << namedContainers[currentDS].GetSize() << std::endl;
         }
     };
 #pragma endregion
@@ -440,19 +445,25 @@ private:
         int sliderLeftMax = x - barWidth + (sliderHW / 2) - 1;
         int sliderLength = sliderRightMax - sliderLeftMax;
         int successfulClicks = 0;
-        int containerSize = namedContainers[currentDS].GetSize();
+        int containerSize = namedContainers[currentDS].GetSize() - 1;
 
         // Sets slider knob to left of bar if not used yet
         if (initialSlider)
         {
-            sliderX = sliderLeftMax;
+            sliderX = ((double)namedContainers[currentDS].GetFrame() / (double)containerSize) * (double)sliderLength + (double)sliderLeftMax;
             sliderY = y - 1;
             initialSlider = false;
         }
 
-        // Calculates and displays the current value of the slider
-        double sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
-        tigrPrint(backdrop, tfont, width * .5 - (tigrTextWidth(tfont, std::to_string(sliderValue).c_str()) / 2), height * .1, tigrRGB(23, 46, 89), std::to_string(sliderValue).c_str());
+        if (updateSlider)
+        {
+            sliderX = ((double)namedContainers[currentDS].GetFrame() / (double)containerSize) * (double)sliderLength + (double)sliderLeftMax;
+            updateSlider = false;
+        }
+
+        // Calculates the current value of the slider
+        double sliderValue;
+
         // Create slider bar
         tigrFillRect(backdrop, barX, barY, (barWidth * 2), (barHeight * 2), tigrRGB(128, 128, 128));
         tigrFillRect(backdrop, x - innerBarWidth, y - innerBarHeight, innerBarWidth * 2, innerBarHeight * 2, tigrRGB(100, 100, 100));
@@ -471,20 +482,23 @@ private:
                 if (prevx < mX && sliderX != sliderRightMax)
                 {
                     sliderX++;
+                    sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
                     sliderEvent.Activate(sliderValue * containerSize);
                 }
                 else if (prevx > mX && sliderX != sliderLeftMax)
                 {
                     sliderX--;
+                    sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
                     sliderEvent.Activate(sliderValue * containerSize);
                 }
             }
             // Functionality that moves slider if clicking on bar
-            else if (prev && (mX >= barX && mX <= barMaxX) && (mY >= barY && mY <= barMaxY))
+            else if (prev && (mX >= barX && mX <= barMaxX) && (mY >= barY && mY <= barMaxY) && (mX <= sliderX || mX >= sliderX))
             {
                 if (mX <= sliderRightMax && mX >= sliderLeftMax)
                 {
                     sliderX = mX;
+                    sliderValue = ((double)sliderX - (double)sliderLeftMax) / (double)sliderLength;
                     sliderEvent.Activate(containerSize * sliderValue);
                 }
                 else if (mX < sliderLeftMax)
@@ -495,7 +509,7 @@ private:
                 else if (mX > sliderRightMax)
                 {
                     sliderX = sliderRightMax;
-                    sliderEvent.Activate(containerSize - 1);
+                    sliderEvent.Activate(containerSize);
                 }
             }
             prevx = mX;
@@ -537,7 +551,6 @@ private:
     static void DrawDS()
     {
         namedContainers[currentDS].Draw();
-        
     }
 
 public:
@@ -548,10 +561,9 @@ public:
     static void Log(std::vector<T> dataStructure, std::string dsName)
     {
 
-
         if (!namedContainers.contains(dsName))
         {
- 
+
             namedContainers[dsName] = DSContainer();
             std::cout << "New data structure found, instantiating " << dsName << std::endl;
         }
@@ -563,7 +575,6 @@ public:
         {
             tigrUpdate(screen); // checks for user input
             DrawWindow();
-            
         }
     }
 
