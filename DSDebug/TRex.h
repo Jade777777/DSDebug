@@ -60,7 +60,7 @@ private:
                     int barSize = rectangleWidthMax * barSizePercent;
 
                     //print bar
-                    tigrFillRect(screen, 30, 50 + offset, barSize, 10, tigrRGB(255, 0, 0));
+                    tigrFillRect(screen, 30, 50 + offset, barSize, 10, tigrRGB(48, 45, 102));
 
                     std::string iValue = "" + std::to_string(c);
 
@@ -335,7 +335,8 @@ private:
             auto it = namedContainers.begin();
             currentDS = it->first;
         }
-        tigrClear(screen, tigrRGB(0x80, 0x90, 0xa0));
+        //new bg color
+        tigrClear(screen, tigrRGB(122, 115, 255));
         DrawUI();
         DrawDS();
     }
@@ -353,9 +354,14 @@ private:
 
         width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
 
-        TPixel neutral = tigrRGB(200, 200, 200);
+        //Change button color
+        /*TPixel neutral = tigrRGB(200, 200, 200);
         TPixel highlight = tigrRGB(230, 230, 230);
-        TPixel selected = tigrRGB(170, 170, 170);
+        TPixel selected = tigrRGB(170, 170, 170);*/
+
+        TPixel neutral = tigrRGB(48, 45, 102);
+        TPixel highlight = tigrRGB(81, 76, 173);
+        TPixel selected = tigrRGB(48, 45, 102);
 
         int xCenter = x + (0.5 * width);
         int yCenter = y + (0.5 * height);
@@ -390,7 +396,7 @@ private:
         else
         {
             // button at neutral
-            tigrFill(screen, x, y, width, height, neutral);
+            tigrRect(screen, x, y, width, height, neutral);
             // waitingForInput = true;
         }
 
