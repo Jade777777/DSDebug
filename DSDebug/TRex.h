@@ -406,7 +406,7 @@ private:
             // waitingForInput = true;
         }
 
-        DrawCenterText(xCenter, yCenter, text);
+        DrawCenterText(xCenter, yCenter+2, text);
     }
 
     class SliderEvent
@@ -531,7 +531,7 @@ private:
         bool frameTraversalVisible = true;
         if (namedContainers[currentDS].GetSize() <= 1)
             frameTraversalVisible = false;
-        DrawCenterText(screen->w / 2+2, 20, currentDS);
+        DrawCenterText(screen->w / 2+2, 22, currentDS);
         int rw = 300;
         tigrRect(screen, (screen->w - rw)/ 2+2, 5, rw, 30, tigrRGB(48, 45, 102));
 
@@ -544,8 +544,8 @@ private:
         GoToSFrame b;
         if (frameTraversalVisible)
         {
-            DrawButton(screen->w / 2 - 15 - 150-20, screen->h - 35, 30, 30, "PREV.", z);
-            DrawButton(screen->w / 2 - 15 + 150+20, screen->h - 35, 30, 30, "NEXT", a);
+            DrawButton(screen->w / 2 - 15 - 150 - 20, screen->h - 35, 30, 30, "<<", z);
+            DrawButton(screen->w / 2 - 15 + 150+20, screen->h - 35, 30, 30, ">>", a);
             DrawSlider(screen->w / 2+2, screen->h - 35+15, 300, 30, b);
         }
     }
