@@ -1,5 +1,6 @@
 #pragma once
 #include "./Tigr/tigr.h"
+#include <iostream>
 #include <vector>
 #include <string>
 #include <map>
@@ -132,7 +133,7 @@ private:
     {
     private:
         std::vector<Node> data;
-        int currentRoot;
+        int currentRoot=0;
 
         class SelectNode : public ButtonEvent
         {
@@ -173,7 +174,18 @@ private:
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
                 DrawButton(x, y + offset, nodeButtonWidth, nodeButtonHeight, data[i].name, buttonEvent);
             }
+            int rootChildren = data[currentRoot].children.size();
+            for (int i = 0; i < rootChildren; i++) {
 
+         
+      
+              
+
+               
+                int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
+                std::string  text = "test";
+                DrawCenterText(x+300, y + offset,  text);
+            }
 
             if (hiddenNodes > 0) {
                 std::string remainderStr =  std::to_string(hiddenNodes) + " more values";
