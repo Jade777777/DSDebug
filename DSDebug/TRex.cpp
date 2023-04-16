@@ -52,6 +52,17 @@ void TestVectorT()
 
 }
 
+void TestTree() {
+
+
+    std::vector<TRex::Node> testTree;
+    for (int i = 0; i < 26; i++) {
+        testTree.push_back(TRex::Node("node " + std::to_string(i)));
+    }
+    TRex::Log(testTree, "Test Tree");
+    TRex::Log(testTree, "Test Tree");
+}
+
 void TestBubbleSort()
 {
     int temp = 0;
@@ -78,6 +89,7 @@ int main(int argc, char* argv[])
         TRex::Log(GenerateRandomInts(i),"Build Vector<int>");
     }
 
+    TestTree();
 
     TestBubbleSort();
 

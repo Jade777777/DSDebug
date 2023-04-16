@@ -27,7 +27,168 @@ private:
     public:
         virtual void Draw() = 0;
     };
+#pragma region UI
+    class ButtonEvent
+    {
+    public:
+        virtual void Activate() = 0;
+    };
+
+    static void DrawWindow()
+    {
+
+        if (currentDS == "")
+        {
+            auto it = namedContainers.begin();
+            currentDS = it->first;
+        }
+        //new bg color
+        tigrClear(screen, tigrRGB(122, 115, 255));
+        DrawUI();
+        DrawDS();
+    }
+
+    static void DrawCenterText(int x, int y, std::string text)
+    {
+
+        int textXCenter = tigrTextWidth(tfont, text.c_str()) / 2;  // text.size() * 4;
+        int textYcenter = tigrTextHeight(tfont, text.c_str()) / 2; // assume there are no new lines
+        tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
+    }
+
+    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent& buttonEvent)
+    {
+
+        width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
+
+        //Change button color
+        /*TPixel neutral = tigrRGB(200, 200, 200);
+        TPixel highlight = tigrRGB(230, 230, 230);
+        TPixel selected = tigrRGB(170, 170, 170);*/
+
+        TPixel neutral = tigrRGB(48, 45, 102);
+        TPixel highlight = tigrRGB(81, 76, 173);
+        TPixel selected = tigrRGB(48, 45, 102);
+
+        int xCenter = x + (0.5 * width);
+        int yCenter = y + (0.5 * height);
+
+        int mx;
+        int my;
+        int input; // 1 is left click
+
+        tigrMouse(screen, &mx, &my, &input);
+
+        if (mx >= x && mx <= x + width && my >= y && my <= y + height)
+        {
+            if (input == 1)
+            {
+                // button selected
+                tigrFill(screen, x, y, width, height, selected);
+                waitingForInput = false;
+            }
+            else
+            {
+                // button Highlighted
+                tigrFill(screen, x, y, width, height, highlight);
+                if (waitingForInput == false)
+                {
+
+                    // ACTIVATE EVENT HERE
+                    buttonEvent.Activate();
+                }
+                waitingForInput = true;
+            }
+        }
+        else
+        {
+            // button at neutral
+            tigrRect(screen, x, y, width, height, neutral);
+            // waitingForInput = true;
+        }
+
+        DrawCenterText(xCenter, yCenter + 2, text);
+    }
+#pragma endregion
 #pragma region DataStructures
+public:
+
+    
+    class Node {
+    public:
+        std::string name;
+        std::vector<Node*> children;
+        Node(std::string n)
+        {
+		name = n;
+		}
+
+    };
+
+
+private:
+
+    class TreeFrame : public DSFrame
+    {
+    private:
+        std::vector<Node> data;
+        int currentRoot;
+
+        class SelectNode : public ButtonEvent
+        {
+        public:
+            int root;
+            TreeFrame *treeFrame;
+            SelectNode(TreeFrame *tf, int r) {
+                root = r;
+                treeFrame = tf;
+            }
+            void Activate()
+            {
+                treeFrame->currentRoot = root;
+                std::cout << "Setting root to new node!" << std::endl;
+                treeFrame = nullptr;
+            }
+        };
+
+    public:
+        TreeFrame(std::vector<Node> nodes) {
+            data = nodes;
+        }
+        void Draw() 
+        {
+            int x =17;
+            int y = 47;
+            int nodeButtonWidth = 100;
+            int nodeButtonHeight = 15;
+            int nodeButtonSpace = 3;
+            int nodeCount = data.size();
+            int maxDisplay =20;
+            maxDisplay = std::min(maxDisplay, nodeCount);
+            int hiddenNodes = nodeCount - maxDisplay;
+
+            for (int i = 0; i < maxDisplay; i++) 
+            {
+                SelectNode buttonEvent = SelectNode(this, i);
+                int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
+                DrawButton(x, y + offset, nodeButtonWidth, nodeButtonHeight, data[i].name, buttonEvent);
+            }
+
+
+            if (hiddenNodes > 0) {
+                std::string remainderStr =  std::to_string(hiddenNodes) + " more values";
+                int offset = ((nodeButtonHeight + nodeButtonSpace) * maxDisplay);
+                char const* remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, x+5, y + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+
+                std::string addOnStr = "not being shown";
+                char const* addOnPrint = addOnStr.c_str();
+                tigrPrint(screen, tfont, x+5, y + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
+            }
+        }
+
+    };
+
 
     //
     template <typename T>
@@ -256,11 +417,6 @@ private:
 
     static bool waitingForInput;
 
-    class ButtonEvent
-    {
-    public:
-        virtual void Activate() = 0;
-    };
 
 #pragma region ButtonEvents
     class NextDS : public ButtonEvent
@@ -333,81 +489,6 @@ private:
     };
 #pragma endregion
 
-    static void DrawWindow()
-    {
-
-        if (currentDS == "")
-        {
-            auto it = namedContainers.begin();
-            currentDS = it->first;
-        }
-        //new bg color
-        tigrClear(screen, tigrRGB(122, 115, 255));
-        DrawUI();
-        DrawDS();
-    }
-
-    static void DrawCenterText(int x, int y, std::string text)
-    {
-
-        int textXCenter = tigrTextWidth(tfont, text.c_str()) / 2;  // text.size() * 4;
-        int textYcenter = tigrTextHeight(tfont, text.c_str()) / 2; // assume there are no new lines
-        tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
-    }
-
-    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent)
-    {
-
-        width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
-
-        //Change button color
-        /*TPixel neutral = tigrRGB(200, 200, 200);
-        TPixel highlight = tigrRGB(230, 230, 230);
-        TPixel selected = tigrRGB(170, 170, 170);*/
-
-        TPixel neutral = tigrRGB(48, 45, 102);
-        TPixel highlight = tigrRGB(81, 76, 173);
-        TPixel selected = tigrRGB(48, 45, 102);
-
-        int xCenter = x + (0.5 * width);
-        int yCenter = y + (0.5 * height);
-
-        int mx;
-        int my;
-        int input; // 1 is left click
-
-        tigrMouse(screen, &mx, &my, &input);
-
-        if (mx >= x && mx <= x + width && my >= y && my <= y + height)
-        {
-            if (input == 1)
-            {
-                // button selected
-                tigrFill(screen, x, y, width, height, selected);
-                waitingForInput = false;
-            }
-            else
-            {
-                // button Highlighted
-                tigrFill(screen, x, y, width, height, highlight);
-                if (waitingForInput == false)
-                {
-
-                    // ACTIVATE EVENT HERE
-                    buttonEvent.Activate();
-                }
-                waitingForInput = true;
-            }
-        }
-        else
-        {
-            // button at neutral
-            tigrRect(screen, x, y, width, height, neutral);
-            // waitingForInput = true;
-        }
-
-        DrawCenterText(xCenter, yCenter+2, text);
-    }
 
     class SliderEvent
     {
@@ -557,6 +638,22 @@ private:
 
 public:
     void operator=(const TRex &) = delete;
+
+    static void Log(std::vector<Node> nodes, std::string dsName) {
+        if (!namedContainers.contains(dsName))
+        {
+            namedContainers[dsName] = DSContainer();
+            std::cout << "New data structure found, instantiating " << dsName << std::endl;
+        }
+        namedContainers[dsName].SaveFrame(new TreeFrame(nodes));
+
+        bool displayNext = false;
+        while (displayNext) // this will be used to implement a delay  between logs
+        {
+            tigrUpdate(screen); // checks for user input
+            DrawWindow();
+        }
+    }
 
     template <typename T>
         requires arithmetic<T>
