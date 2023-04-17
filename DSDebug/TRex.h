@@ -118,7 +118,7 @@ public:
     class Node {
     public:
         std::string name;
-        std::vector<Node*> children;
+        std::vector<int> childIndicies;
         Node(std::string n)
         {
 		name = n;
@@ -174,16 +174,17 @@ private:
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
                 DrawButton(x, y + offset, nodeButtonWidth, nodeButtonHeight, data[i].name, buttonEvent);
             }
-            int rootChildren = data[currentRoot].children.size();
+
+            int rootChildren = data[currentRoot].childIndicies.size();
             for (int i = 0; i < rootChildren; i++) {
 
          
       
-              
-
+                
+                int childIndex = data[currentRoot].childIndicies[i];
                
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
-                std::string  text = "test";
+                std::string  text = data[childIndex].name;
                 DrawCenterText(x+300, y + offset,  text);
             }
 

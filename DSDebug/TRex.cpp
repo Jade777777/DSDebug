@@ -59,10 +59,10 @@ void TestTree() {
     for (int i = 0; i < 26; i++) {
         testTree.push_back(TRex::Node("node " + std::to_string(i)));
     }
-    testTree[0].children.push_back(&testTree[3]);
-    testTree[0].children.push_back(&testTree[5]);
-    testTree[0].children.push_back(&testTree[7]);
-    testTree[0].children.push_back(&testTree[11]);
+    testTree[0].childIndicies.push_back(3);
+    testTree[0].childIndicies.push_back(5);
+    testTree[0].childIndicies.push_back(7);
+    testTree[0].childIndicies.push_back(11);
     TRex::Log(testTree, "Test Tree");
     TRex::Log(testTree, "Test Tree");
 }
