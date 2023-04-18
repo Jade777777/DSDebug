@@ -8,11 +8,29 @@
 #include <algorithm>
 #include <type_traits>
 #include <concepts>
+#include <stack>
 
 template <typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
 template <typename T>
 concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
+// template <typename T>
+// concept stack = std::stack<T>;
+// concept stack = requires(T s) {
+//                     typename T::value_type; // T must have a nested type named value_type
+//                     {
+//                         s.empty()
+//                         } -> std::same_as<bool>; // s.empty() must return a bool
+//                     {
+//                         s.top()
+//                         } -> std::same_as<typename T::value_type &>; // s.top() must return a reference to the value type
+//                     {
+//                         s.pop()
+//                         } -> std::same_as<void>; // s.pop() must return void
+//                     {
+//                         s.push(std::declval<typename T::value_type>())
+//                         } -> std::same_as<void>; // s.push() must return void and accept a value of the value type
+//                 };
 
 static bool initialSlider = true;
 static bool updateSlider = false;
@@ -43,7 +61,7 @@ private:
             auto it = namedContainers.begin();
             currentDS = it->first;
         }
-        //new bg color
+        // new bg color
         tigrClear(screen, tigrRGB(122, 115, 255));
         DrawUI();
         DrawDS();
@@ -57,12 +75,12 @@ private:
         tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
     }
 
-    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent& buttonEvent)
+    static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent)
     {
 
         width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
 
-        //Change button color
+        // Change button color
         /*TPixel neutral = tigrRGB(200, 200, 200);
         TPixel highlight = tigrRGB(230, 230, 230);
         TPixel selected = tigrRGB(170, 170, 170);*/
@@ -113,34 +131,66 @@ private:
 #pragma endregion
 #pragma region DataStructures
 public:
-
-    
-    class Node {
+    class Node
+    {
     public:
         std::string name;
         std::vector<int> childIndicies;
         Node(std::string n)
         {
-		name = n;
-		}
-
+            name = n;
+        }
     };
 
-
 private:
+    template <typename T>
+    //     requires stack<T>
+    class StackFrame : public DSFrame
+    {
+    private:
+        std::vector<T> data;
+
+    public:
+        StackFrame(std::vector<T> stack)
+        {
+            // this->data = data;
+            // std::vector<T> stackContents;
+            // for (int i = 0; i < stack.size; i++)
+            // {
+            //     stackContents[i] = stack.pop();
+            // }
+            data = stack;
+        }
+
+        void Draw()
+        {
+            int count = 0;
+            int spacing = 5;
+            for (auto const &c : data)
+            {
+                int y = (50 * count) + (spacing * count);
+                tigrFillRect(screen, 17, 300, 540, (y), tigrRGB(48, 45, 102));
+                std::string value = std::to_string(c);
+                char const *valuePrint = value.c_str();
+                tigrPrint(screen, tfont, 300 / 2, y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
+                count++;
+            }
+        }
+    };
 
     class TreeFrame : public DSFrame
     {
     private:
         std::vector<Node> data;
-        int currentRoot=0;
+        int currentRoot = 0;
 
         class SelectNode : public ButtonEvent
         {
         public:
             int root;
             TreeFrame *treeFrame;
-            SelectNode(TreeFrame *tf, int r) {
+            SelectNode(TreeFrame *tf, int r)
+            {
                 root = r;
                 treeFrame = tf;
             }
@@ -153,22 +203,23 @@ private:
         };
 
     public:
-        TreeFrame(std::vector<Node> nodes) {
+        TreeFrame(std::vector<Node> nodes)
+        {
             data = nodes;
         }
-        void Draw() 
+        void Draw()
         {
-            int x =17;
+            int x = 17;
             int y = 47;
             int nodeButtonWidth = 100;
             int nodeButtonHeight = 15;
             int nodeButtonSpace = 3;
             int nodeCount = data.size();
-            int maxDisplay =20;
+            int maxDisplay = 20;
             maxDisplay = std::min(maxDisplay, nodeCount);
             int hiddenNodes = nodeCount - maxDisplay;
 
-            for (int i = 0; i < maxDisplay; i++) 
+            for (int i = 0; i < maxDisplay; i++)
             {
                 SelectNode buttonEvent = SelectNode(this, i);
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
@@ -176,32 +227,29 @@ private:
             }
 
             int rootChildren = data[currentRoot].childIndicies.size();
-            for (int i = 0; i < rootChildren; i++) {
+            for (int i = 0; i < rootChildren; i++)
+            {
 
-         
-      
-                
                 int childIndex = data[currentRoot].childIndicies[i];
-               
+
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
-                std::string  text = data[childIndex].name;
-                DrawCenterText(x+300, y + offset,  text);
+                std::string text = data[childIndex].name;
+                DrawCenterText(x + 300, y + offset, text);
             }
 
-            if (hiddenNodes > 0) {
-                std::string remainderStr =  std::to_string(hiddenNodes) + " more values";
+            if (hiddenNodes > 0)
+            {
+                std::string remainderStr = std::to_string(hiddenNodes) + " more values";
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * maxDisplay);
-                char const* remainderPrint = remainderStr.c_str();
-                tigrPrint(screen, tfont, x+5, y + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+                char const *remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, x + 5, y + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
 
                 std::string addOnStr = "not being shown";
-                char const* addOnPrint = addOnStr.c_str();
-                tigrPrint(screen, tfont, x+5, y + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
+                char const *addOnPrint = addOnStr.c_str();
+                tigrPrint(screen, tfont, x + 5, y + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
         }
-
     };
-
 
     //
     template <typename T>
@@ -235,7 +283,7 @@ private:
                     double barSizePercent = c / double(frameMax);
                     int barSize = rectangleWidthMax * barSizePercent;
 
-                    //print bar
+                    // print bar
                     tigrFillRect(screen, 17, 47 + offset, barSize, 16, tigrRGB(48, 45, 102));
 
                     std::string iValue = "" + std::to_string(c);
@@ -430,7 +478,6 @@ private:
 
     static bool waitingForInput;
 
-
 #pragma region ButtonEvents
     class NextDS : public ButtonEvent
     {
@@ -502,7 +549,6 @@ private:
     };
 #pragma endregion
 
-
     class SliderEvent
     {
     public:
@@ -524,7 +570,6 @@ private:
     {
         TPixel neutral = tigrRGB(48, 45, 102);
         TPixel highlight = tigrRGB(81, 76, 173);
-
 
         Tigr *backdrop = tigrBitmap(screen->w, screen->h);
         Tigr *slider = tigrBitmap(screen->w, screen->h);
@@ -566,7 +611,7 @@ private:
         tigrRect(screen, barX, barY, (barWidth * 2), (barHeight * 2), neutral);
 
         // Slider knob creation
-        tigrFill(screen, sliderX-(0.35*sliderHW), sliderY-(0.35*sliderHW)+2, sliderHW*0.7, sliderHW*0.7-1, highlight);
+        tigrFill(screen, sliderX - (0.35 * sliderHW), sliderY - (0.35 * sliderHW) + 2, sliderHW * 0.7, sliderHW * 0.7 - 1, highlight);
 
         int mX, mY, mB;
         tigrMouse(screen, &mX, &mY, &mB);
@@ -616,7 +661,6 @@ private:
         {
             prev = 0;
         }
-
     }
 
     static void DrawUI()
@@ -625,9 +669,9 @@ private:
         bool frameTraversalVisible = true;
         if (namedContainers[currentDS].GetSize() <= 1)
             frameTraversalVisible = false;
-        DrawCenterText(screen->w / 2+2, 22, currentDS);
+        DrawCenterText(screen->w / 2 + 2, 22, currentDS);
         int rw = 300;
-        tigrRect(screen, (screen->w - rw)/ 2+2, 5, rw, 30, tigrRGB(48, 45, 102));
+        tigrRect(screen, (screen->w - rw) / 2 + 2, 5, rw, 30, tigrRGB(48, 45, 102));
 
         PrevDS x;
         DrawButton(screen->w / 2 - 15 - 150 - 20, 5, 30, 30, "PREV.", x);
@@ -639,8 +683,8 @@ private:
         if (frameTraversalVisible)
         {
             DrawButton(screen->w / 2 - 15 - 150 - 20, screen->h - 35, 30, 30, "<<", z);
-            DrawButton(screen->w / 2 - 15 + 150+20, screen->h - 35, 30, 30, ">>", a);
-            DrawSlider(screen->w / 2+2, screen->h - 35+15, 300, 30, b);
+            DrawButton(screen->w / 2 - 15 + 150 + 20, screen->h - 35, 30, 30, ">>", a);
+            DrawSlider(screen->w / 2 + 2, screen->h - 35 + 15, 300, 30, b);
         }
     }
 
@@ -652,13 +696,69 @@ private:
 public:
     void operator=(const TRex &) = delete;
 
-    static void Log(std::vector<Node> nodes, std::string dsName) {
+    static void Log(std::vector<Node> nodes, std::string dsName)
+    {
         if (!namedContainers.contains(dsName))
         {
             namedContainers[dsName] = DSContainer();
             std::cout << "New data structure found, instantiating " << dsName << std::endl;
         }
         namedContainers[dsName].SaveFrame(new TreeFrame(nodes));
+
+        bool displayNext = false;
+        while (displayNext) // this will be used to implement a delay  between logs
+        {
+            tigrUpdate(screen); // checks for user input
+            DrawWindow();
+        }
+    }
+
+    template <typename T>
+    static void Log(std::stack<T> dataStructure, std::string dsName)
+    {
+        if (!namedContainers.contains(dsName))
+        {
+
+            namedContainers[dsName] = DSContainer();
+            std::cout << "New data structure found, instantiating " << dsName << std::endl;
+        }
+
+        std::vector<T> stackContents;
+        int size = dataStructure.size();
+        for (int i = 0; i < size; i++)
+        {
+            stackContents.push_back(dataStructure.top());
+            dataStructure.pop();
+            // namedContainers[dsName].SaveFrame(new StackFrame(stackContents));
+        }
+        std::reverse(stackContents.begin(), stackContents.end());
+
+        std::vector<T> frame;
+        namedContainers[dsName].SaveFrame(new StackFrame(frame));
+        // std::vector<T> contentCopy(stackContents);
+        for (auto it = stackContents.begin(); it != stackContents.end(); ++it)
+        {
+            frame.push_back(*it);
+            namedContainers[dsName].SaveFrame(new StackFrame(frame));
+        }
+        for (int i = 0; i < size; i++)
+        {
+            frame.pop_back();
+            namedContainers[dsName].SaveFrame(new StackFrame(frame));
+        }
+        // for (auto const &c : stackContents)
+        // {
+        //     // frame.push_back(contentCopy.front());
+        //     frame.push_back(c);
+        //     // contentCopy.erase(contentCopy.begin());
+        //     namedContainers[dsName].SaveFrame(new StackFrame(frame));
+        // }
+        // for (auto const &c : stackContents)
+        // {
+        //     namedContainers[dsName].SaveFrame(new StackFrame(stackContents));
+        // }
+        // namedContainers[dsName].SaveFrame(new StackFrame(dataStructure));
+        // namedContainers[dsName].SaveFrame(new StackFrame(stackContents));
 
         bool displayNext = false;
         while (displayNext) // this will be used to implement a delay  between logs
