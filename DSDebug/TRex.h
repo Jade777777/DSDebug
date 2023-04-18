@@ -123,6 +123,10 @@ public:
         {
 		name = n;
 		}
+        void AddChild(int index)
+        {
+			childIndicies.push_back(index);
+		}
 
     };
 
@@ -147,8 +151,8 @@ private:
             void Activate()
             {
                 treeFrame->currentRoot = root;
-                std::cout << "Setting root to new node!" << std::endl;
-                treeFrame = nullptr;
+                std::cout << "Setting root to node " << root<< "!" << std::endl;
+                
             }
         };
 
@@ -170,34 +174,37 @@ private:
 
             for (int i = 0; i < maxDisplay; i++) 
             {
-                SelectNode buttonEvent = SelectNode(this, i);
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
-                DrawButton(x, y + offset, nodeButtonWidth, nodeButtonHeight, data[i].name, buttonEvent);
+                SelectNode accessNode = SelectNode(this, i);
+                DrawButton(x, y + offset, nodeButtonWidth, nodeButtonHeight, data[i].name, accessNode);
             }
-
-            int rootChildren = data[currentRoot].childIndicies.size();
-            for (int i = 0; i < rootChildren; i++) {
-
-         
-      
-                
-                int childIndex = data[currentRoot].childIndicies[i];
-               
-                int offset = ((nodeButtonHeight + nodeButtonSpace) * i);
-                std::string  text = data[childIndex].name;
-                DrawCenterText(x+300, y + offset,  text);
-            }
-
             if (hiddenNodes > 0) {
-                std::string remainderStr =  std::to_string(hiddenNodes) + " more values";
+                std::string remainderStr = std::to_string(hiddenNodes) + " more values";
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * maxDisplay);
                 char const* remainderPrint = remainderStr.c_str();
-                tigrPrint(screen, tfont, x+5, y + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
+                tigrPrint(screen, tfont, x + 5, y + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
 
                 std::string addOnStr = "not being shown";
                 char const* addOnPrint = addOnStr.c_str();
-                tigrPrint(screen, tfont, x+5, y + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
+                tigrPrint(screen, tfont, x + 5, y + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
+
+
+            //Draw tree from current root
+            DrawCenterText(screen->w * 0.5, y , data[currentRoot].name + " children:");
+
+            for (int i = 0; i < data[currentRoot].childIndicies.size(); i++) {
+
+                int childIndex = data[currentRoot].childIndicies[i];
+               
+                int offset = ((nodeButtonHeight + nodeButtonSpace) * (i+1));
+                std::string  text = data[childIndex].name;
+
+                SelectNode accessChild = SelectNode(this, childIndex);
+                DrawButton(screen->w*0.5-(0.5*nodeButtonWidth), y + offset, nodeButtonWidth, nodeButtonHeight, text, accessChild);
+                
+            }
+
         }
 
     };
