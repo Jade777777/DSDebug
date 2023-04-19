@@ -204,14 +204,12 @@ private:
         void Draw()
         {
             int count = 0;
-            // int remainderCount = 0;
             int spacing = 5;
             int itemCount = data.size();
             int width = 50;
             int y = (width * count) + (spacing * count);
             int textY = 0;
             int yLoc = 0;
-            // int y = (50 * count) + (spacing * count);
             for (auto const &c : data)
             {
                 if (size <= 7)
@@ -219,9 +217,7 @@ private:
                     y = (width * count) + (spacing * count);
                     width = 50;
                     yLoc = (480 - (width * 2)) - y;
-                    // textY = 400 - y
                     textY = (480 - (80)) - y;
-                    // y = (50 * count) + (spacing * count);
                 }
                 else if (size >= 8 && size <= 13)
                 {
@@ -229,9 +225,7 @@ private:
                     width = 25;
                     yLoc = (480 - (width * 3)) - y;
                     textY = (480 - (66)) - y;
-                    // int y = (width * count) + (spacing * count);
                 }
-                // else if (size >= 14 && size <= 24)
                 else if (size >= 14)
                 {
                     spacing = 1;
@@ -242,9 +236,6 @@ private:
                 }
                 if (count <= 24)
                 {
-                    // int y = (width * count) + (spacing * count);
-                    // tigrFillRect(screen, 17, 380 - y, 600, (width), tigrRGB(48, 45, 102));
-                    // tigrFillRect(screen, 17, (480 - (width * 2)) - y, 600, (width), tigrRGB(48, 45, 102));
                     tigrFillRect(screen, 17, yLoc, 600, (width), tigrRGB(48, 45, 102));
                     std::string text;
                     if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
@@ -269,7 +260,6 @@ private:
                     }
 
                     char const *valuePrint = text.c_str();
-                    // tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), 400 - y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
                     tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), textY, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
                     count++;
                 }
@@ -278,12 +268,7 @@ private:
             {
                 std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values not being shown";
                 char const *remainderPrint = remainderStr.c_str();
-                // tigrPrint(screen, tfont, 450, 50, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
                 tigrPrint(screen, tfont, 17, 36, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
-
-                // std::string addOnStr = "not being shown";
-                // char const *addOnPrint = addOnStr.c_str();
-                // tigrPrint(screen, tfont, 450, 50, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
         }
     };
@@ -891,7 +876,6 @@ public:
             else
             {
                 maxSize = true;
-                // size = 24;
                 remainderCount++;
             }
         }
