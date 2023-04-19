@@ -160,10 +160,10 @@ void TestTree()
     {
         testTree.push_back(TRex::Node("node " + std::to_string(i)));
     }
-    testTree[0].childIndicies.push_back(3);
-    testTree[0].childIndicies.push_back(5);
-    testTree[0].childIndicies.push_back(7);
-    testTree[0].childIndicies.push_back(11);
+    testTree[0].AddChild(3);
+    testTree[0].AddChild(5);
+    testTree[0].AddChild(7);
+    testTree[0].AddChild(11);
     TRex::Log(testTree, "Test Tree");
     TRex::Log(testTree, "Test Tree");
 }
