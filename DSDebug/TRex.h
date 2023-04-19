@@ -16,23 +16,6 @@ template <typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
 template <typename T>
 concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
-// template <typename T>
-// concept stack = std::stack<T>;
-// concept stack = requires(T s) {
-//                     typename T::value_type; // T must have a nested type named value_type
-//                     {
-//                         s.empty()
-//                         } -> std::same_as<bool>; // s.empty() must return a bool
-//                     {
-//                         s.top()
-//                         } -> std::same_as<typename T::value_type &>; // s.top() must return a reference to the value type
-//                     {
-//                         s.pop()
-//                         } -> std::same_as<void>; // s.pop() must return void
-//                     {
-//                         s.push(std::declval<typename T::value_type>())
-//                         } -> std::same_as<void>; // s.push() must return void and accept a value of the value type
-//                 };
 
 static bool initialSlider = true;
 static bool updateSlider = false;
