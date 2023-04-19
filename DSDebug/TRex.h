@@ -817,19 +817,15 @@ public:
         int size = dataStructure.size();
         for (int i = 0; i < size; i++)
         {
-            // queueContents.push_back(dataStructure.front());
             queueContents.insert(queueContents.begin(), dataStructure.front());
             dataStructure.pop();
         }
-        // std::reverse(queueContents.begin(), queueContents.end());
 
         std::vector<T> frame;
         namedContainers[dsName].SaveFrame(new QueueFrame(frame));
         for (auto it = queueContents.rbegin(); it != queueContents.rend(); ++it)
         {
-            // frame.push_back(*it);
             frame.insert(frame.begin(), *it);
-            // std::reverse(frame.begin(), frame.end());
             namedContainers[dsName].SaveFrame(new QueueFrame(frame));
         }
         for (int i = 0; i < size; i++)
