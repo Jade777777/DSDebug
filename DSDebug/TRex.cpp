@@ -116,6 +116,37 @@ void TestStack()
     floatStack.push(fInput4);
     floatStack.push(fInput5);
     TRex::Log(floatStack, "Float Stack");
+
+    std::stack<int> longStack;
+    longStack.push(1);
+    longStack.push(2);
+    longStack.push(3);
+    longStack.push(4);
+    longStack.push(5);
+    longStack.push(6);
+    longStack.push(7);
+    longStack.push(8);
+    longStack.push(9);
+    longStack.push(10);
+    longStack.push(11);
+    longStack.push(12);
+    longStack.push(13);
+    longStack.push(14);
+    longStack.push(15);
+    longStack.push(16);
+    longStack.push(17);
+    longStack.push(18);
+    longStack.push(19);
+    longStack.push(20);
+    longStack.push(21);
+    longStack.push(22);
+    longStack.push(23);
+    longStack.push(24);
+    longStack.push(25);
+    longStack.push(26);
+    longStack.push(27);
+    longStack.push(28);
+    TRex::Log(longStack, "Long Stack");
 }
 
 void TestQueue()
@@ -150,6 +181,53 @@ void TestQueue()
     floatQueue.push(126.352);
     floatQueue.push(0.9836);
     TRex::Log(floatQueue, "Float Queue");
+
+    std::queue<int> longQueue;
+    longQueue.push(1);
+    longQueue.push(2);
+    longQueue.push(3);
+    longQueue.push(4);
+    longQueue.push(5);
+    longQueue.push(6);
+    longQueue.push(7);
+    longQueue.push(8);
+    longQueue.push(9);
+    //
+    longQueue.push(10);
+    longQueue.push(11);
+    longQueue.push(12);
+    longQueue.push(13);
+    //
+    longQueue.push(14);
+    longQueue.push(15);
+    longQueue.push(16);
+    longQueue.push(17);
+    longQueue.push(18);
+    longQueue.push(19);
+    longQueue.push(20);
+    longQueue.push(21);
+    longQueue.push(22);
+    longQueue.push(23);
+    longQueue.push(24);
+    longQueue.push(25);
+    longQueue.push(26);
+    TRex::Log(longQueue, "Long Queue");
+
+    std::queue<int> mediumQueue;
+    mediumQueue.push(1);
+    mediumQueue.push(2);
+    mediumQueue.push(3);
+    mediumQueue.push(4);
+    mediumQueue.push(5);
+    mediumQueue.push(6);
+    mediumQueue.push(7);
+    mediumQueue.push(8);
+    mediumQueue.push(9);
+    mediumQueue.push(10);
+    mediumQueue.push(11);
+    mediumQueue.push(12);
+    mediumQueue.push(13);
+    TRex::Log(mediumQueue, "Medium Sized Queue");
 }
 
 void TestTree()

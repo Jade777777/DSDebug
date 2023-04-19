@@ -144,13 +144,12 @@ public:
         std::vector<int> childIndicies;
         Node(std::string n)
         {
-		name = n;
-		}
+            name = n;
+        }
         void AddChild(int index)
         {
-			childIndicies.push_back(index);
-		}
-
+            childIndicies.push_back(index);
+        }
     };
 
 private:
@@ -161,46 +160,87 @@ private:
     {
     private:
         std::vector<T> data;
+        int size;
+        int remainderCount;
+        int currentFrame;
 
     public:
-        StackFrame(std::vector<T> stack)
+        StackFrame(std::vector<T> stack, int queueSize, int frame, int remaining = 0)
         {
             data = stack;
+            size = queueSize;
+            remainderCount = remaining;
+            currentFrame = frame;
         }
 
         void Draw()
         {
             int count = 0;
             int spacing = 5;
+            int itemCount = data.size();
+            int width = 50;
+            int y = (width * count) + (spacing * count);
+            int textY = 0;
+            int yLoc = 0;
             for (auto const &c : data)
             {
-                int y = (50 * count) + (spacing * count);
-                tigrFillRect(screen, 17, 380 - y, 600, (50), tigrRGB(48, 45, 102));
-                std::string text;
-                if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
-                    text = c;
-                else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
+                if (size <= 7)
                 {
-                    char str[50];
-                    sprintf_s(str, "%d", c);
-                    text = str;
+                    y = (width * count) + (spacing * count);
+                    width = 50;
+                    yLoc = (480 - (width * 2)) - y;
+                    textY = (480 - (80)) - y;
                 }
-                else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
+                else if (size >= 8 && size <= 13)
                 {
-                    char str[50];
-                    sprintf_s(str, "%f", c);
-                    text = str;
+                    y = (width * count) + (spacing * count);
+                    width = 25;
+                    yLoc = (480 - (width * 3)) - y;
+                    textY = (480 - (66)) - y;
                 }
-                else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
+                else if (size >= 14)
                 {
-                    char str[50];
-                    sprintf_s(str, "%f", c);
-                    text = str;
+                    spacing = 1;
+                    y = (width * count) + (spacing);
+                    width = 16;
+                    yLoc = (480 - (width * 4)) - y;
+                    textY = (480 - (60)) - y;
                 }
+                if (count <= 24)
+                {
+                    tigrFillRect(screen, 17, yLoc, 600, (width), tigrRGB(48, 45, 102));
+                    std::string text;
+                    if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
+                        text = c;
+                    else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
+                    {
+                        char str[50];
+                        sprintf_s(str, "%d", c);
+                        text = str;
+                    }
+                    else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
+                    {
+                        char str[50];
+                        sprintf_s(str, "%f", c);
+                        text = str;
+                    }
+                    else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
+                    {
+                        char str[50];
+                        sprintf_s(str, "%f", c);
+                        text = str;
+                    }
 
-                char const *valuePrint = text.c_str();
-                tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), 400 - y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
-                count++;
+                    char const *valuePrint = text.c_str();
+                    tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), textY, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
+                    count++;
+                }
+            }
+            if (remainderCount > 0 && currentFrame == 25)
+            {
+                std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values not being shown";
+                char const *remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 17, 36, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
             }
         }
     };
@@ -211,46 +251,87 @@ private:
     {
     private:
         std::vector<T> data;
+        int size;
+        int remainderCount;
+        int currentFrame;
 
     public:
-        QueueFrame(std::vector<T> queue)
+        QueueFrame(std::vector<T> queue, int queueSize, int frame, int remaining = 0)
         {
             data = queue;
+            size = queueSize;
+            remainderCount = remaining;
+            currentFrame = frame;
         }
 
         void Draw()
         {
             int count = 0;
             int spacing = 5;
+            int itemCount = data.size();
+            int width = 50;
+            int y = (width * count) + (spacing * count);
+            int textY = 0;
+            int yLoc = 0;
             for (auto const &c : data)
             {
-                int y = (50 * count) + (spacing * count);
-                tigrFillRect(screen, 17, 380 - y, 600, (50), tigrRGB(48, 45, 102));
-                std::string text;
-                if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
-                    text = c;
-                else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
+                if (size <= 7)
                 {
-                    char str[50];
-                    sprintf_s(str, "%d", c);
-                    text = str;
+                    y = (width * count) + (spacing * count);
+                    width = 50;
+                    yLoc = (480 - (width * 2)) - y;
+                    textY = (480 - (80)) - y;
                 }
-                else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
+                else if (size >= 8 && size <= 13)
                 {
-                    char str[50];
-                    sprintf_s(str, "%f", c);
-                    text = str;
+                    y = (width * count) + (spacing * count);
+                    width = 25;
+                    yLoc = (480 - (width * 3)) - y;
+                    textY = (480 - (66)) - y;
                 }
-                else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
+                else if (size >= 14)
                 {
-                    char str[50];
-                    sprintf_s(str, "%f", c);
-                    text = str;
+                    spacing = 1;
+                    y = (width * count) + (spacing);
+                    width = 16;
+                    yLoc = (480 - (width * 4)) - y;
+                    textY = (480 - (60)) - y;
                 }
+                if (count <= 24)
+                {
+                    tigrFillRect(screen, 17, yLoc, 600, (width), tigrRGB(48, 45, 102));
+                    std::string text;
+                    if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
+                        text = c;
+                    else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
+                    {
+                        char str[50];
+                        sprintf_s(str, "%d", c);
+                        text = str;
+                    }
+                    else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
+                    {
+                        char str[50];
+                        sprintf_s(str, "%f", c);
+                        text = str;
+                    }
+                    else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
+                    {
+                        char str[50];
+                        sprintf_s(str, "%f", c);
+                        text = str;
+                    }
 
-                char const *valuePrint = text.c_str();
-                tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), 400 - y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
-                count++;
+                    char const *valuePrint = text.c_str();
+                    tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), textY, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
+                    count++;
+                }
+            }
+            if (remainderCount > 0 && currentFrame == 25)
+            {
+                std::string remainderStr = "There are " + std::to_string(remainderCount) + " more values not being shown";
+                char const *remainderPrint = remainderStr.c_str();
+                tigrPrint(screen, tfont, 17, 36, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
             }
         }
     };
@@ -276,8 +357,7 @@ private:
             void Activate()
             {
                 treeFrame->currentRoot = root;
-                std::cout << "Setting root to node " << root<< "!" << std::endl;
-                
+                std::cout << "Setting root to node " << root << "!" << std::endl;
             }
         };
 
@@ -304,33 +384,32 @@ private:
                 SelectNode accessNode = SelectNode(this, i);
                 DrawButton(x, y + offset, nodeButtonWidth, nodeButtonHeight, data[i].name, accessNode);
             }
-            if (hiddenNodes > 0) {
+            if (hiddenNodes > 0)
+            {
                 std::string remainderStr = std::to_string(hiddenNodes) + " more values";
                 int offset = ((nodeButtonHeight + nodeButtonSpace) * maxDisplay);
-                char const* remainderPrint = remainderStr.c_str();
+                char const *remainderPrint = remainderStr.c_str();
                 tigrPrint(screen, tfont, x + 5, y + offset, tigrRGB(0xFF, 0xFF, 0xFF), remainderPrint);
 
                 std::string addOnStr = "not being shown";
-                char const* addOnPrint = addOnStr.c_str();
+                char const *addOnPrint = addOnStr.c_str();
                 tigrPrint(screen, tfont, x + 5, y + offset + 15, tigrRGB(0xFF, 0xFF, 0xFF), addOnPrint);
             }
 
+            // Draw tree from current root
+            DrawCenterText(screen->w * 0.5, y, data[currentRoot].name + " children:");
 
-            //Draw tree from current root
-            DrawCenterText(screen->w * 0.5, y , data[currentRoot].name + " children:");
-
-            for (int i = 0; i < data[currentRoot].childIndicies.size(); i++) {
+            for (int i = 0; i < data[currentRoot].childIndicies.size(); i++)
+            {
 
                 int childIndex = data[currentRoot].childIndicies[i];
-               
-                int offset = ((nodeButtonHeight + nodeButtonSpace) * (i+1));
-                std::string  text = data[childIndex].name;
+
+                int offset = ((nodeButtonHeight + nodeButtonSpace) * (i + 1));
+                std::string text = data[childIndex].name;
 
                 SelectNode accessChild = SelectNode(this, childIndex);
-                DrawButton(screen->w*0.5-(0.5*nodeButtonWidth), y + offset, nodeButtonWidth, nodeButtonHeight, text, accessChild);
-                
+                DrawButton(screen->w * 0.5 - (0.5 * nodeButtonWidth), y + offset, nodeButtonWidth, nodeButtonHeight, text, accessChild);
             }
-
         }
     };
 
@@ -812,24 +891,56 @@ public:
 
         std::vector<T> stackContents;
         int size = dataStructure.size();
+        int count = 0;
+        int remainderCount = 0;
+        int frameCount = 0;
+        bool maxSize = false;
+        int neededPops = size - 24;
+        if (neededPops > 0)
+        {
+            for (int i = 0; i < neededPops; i++)
+            {
+
+                dataStructure.pop();
+            }
+        }
         for (int i = 0; i < size; i++)
         {
-            stackContents.push_back(dataStructure.top());
-            dataStructure.pop();
+
+            if (count < 24)
+            {
+                stackContents.push_back(dataStructure.top());
+                dataStructure.pop();
+                count++;
+            }
+            else
+            {
+                maxSize = true;
+                remainderCount++;
+            }
         }
+
+        if (maxSize)
+        {
+            size = 24;
+        }
+
         std::reverse(stackContents.begin(), stackContents.end());
 
         std::vector<T> frame;
-        namedContainers[dsName].SaveFrame(new StackFrame(frame));
+        frameCount++;
+        namedContainers[dsName].SaveFrame(new StackFrame(frame, size, frameCount, remainderCount));
         for (auto it = stackContents.begin(); it != stackContents.end(); ++it)
         {
             frame.push_back(*it);
-            namedContainers[dsName].SaveFrame(new StackFrame(frame));
+            frameCount++;
+            namedContainers[dsName].SaveFrame(new StackFrame(frame, size, frameCount, remainderCount));
         }
         for (int i = 0; i < size; i++)
         {
             frame.pop_back();
-            namedContainers[dsName].SaveFrame(new StackFrame(frame));
+            frameCount++;
+            namedContainers[dsName].SaveFrame(new StackFrame(frame, size, frameCount, remainderCount));
         }
 
         bool displayNext = false;
@@ -845,30 +956,50 @@ public:
     {
         if (!namedContainers.contains(dsName))
         {
-
             namedContainers[dsName] = DSContainer();
             std::cout << "New data structure found, instantiating " << dsName << std::endl;
         }
 
         std::vector<T> queueContents;
         int size = dataStructure.size();
+        int count = 0;
+        int remainderCount = 0;
+        int frameCount = 0;
+        bool maxSize = false;
         for (int i = 0; i < size; i++)
         {
-            queueContents.insert(queueContents.begin(), dataStructure.front());
-            dataStructure.pop();
+            if (count < 24)
+            {
+                queueContents.insert(queueContents.begin(), dataStructure.front());
+                dataStructure.pop();
+                count++;
+            }
+            else
+            {
+                maxSize = true;
+                remainderCount++;
+            }
+        }
+
+        if (maxSize)
+        {
+            size = 24;
         }
 
         std::vector<T> frame;
-        namedContainers[dsName].SaveFrame(new QueueFrame(frame));
+        frameCount++;
+        namedContainers[dsName].SaveFrame(new QueueFrame(frame, size, frameCount, remainderCount));
         for (auto it = queueContents.rbegin(); it != queueContents.rend(); ++it)
         {
             frame.insert(frame.begin(), *it);
-            namedContainers[dsName].SaveFrame(new QueueFrame(frame));
+            frameCount++;
+            namedContainers[dsName].SaveFrame(new QueueFrame(frame, size, frameCount, remainderCount));
         }
         for (int i = 0; i < size; i++)
         {
             frame.pop_back();
-            namedContainers[dsName].SaveFrame(new QueueFrame(frame));
+            frameCount++;
+            namedContainers[dsName].SaveFrame(new QueueFrame(frame, size, frameCount, remainderCount));
         }
 
         bool displayNext = false;
