@@ -9,6 +9,7 @@
 #include <type_traits>
 #include <concepts>
 #include <stack>
+#include <queue>
 #include <typeinfo>
 #include <type_traits>
 
@@ -138,6 +139,56 @@ private:
         StackFrame(std::vector<T> stack)
         {
             data = stack;
+        }
+
+        void Draw()
+        {
+            int count = 0;
+            int spacing = 5;
+            for (auto const &c : data)
+            {
+                int y = (50 * count) + (spacing * count);
+                tigrFillRect(screen, 17, 380 - y, 600, (50), tigrRGB(48, 45, 102));
+                std::string text;
+                if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
+                    text = c;
+                else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
+                {
+                    char str[50];
+                    sprintf(str, "%d", c);
+                    text = str;
+                }
+                else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
+                {
+                    char str[50];
+                    sprintf(str, "%f", c);
+                    text = str;
+                }
+                else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
+                {
+                    char str[50];
+                    sprintf(str, "%f", c);
+                    text = str;
+                }
+
+                char const *valuePrint = text.c_str();
+                tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), 400 - y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
+                count++;
+            }
+        }
+    };
+
+private:
+    template <typename T>
+    class QueueFrame : public DSFrame
+    {
+    private:
+        std::vector<T> data;
+
+    public:
+        QueueFrame(std::vector<T> queue)
+        {
+            data = queue;
         }
 
         void Draw()
@@ -742,6 +793,49 @@ public:
         {
             frame.pop_back();
             namedContainers[dsName].SaveFrame(new StackFrame(frame));
+        }
+
+        bool displayNext = false;
+        while (displayNext) // this will be used to implement a delay  between logs
+        {
+            tigrUpdate(screen); // checks for user input
+            DrawWindow();
+        }
+    }
+
+    template <typename T>
+    static void Log(std::queue<T> dataStructure, std::string dsName)
+    {
+        if (!namedContainers.contains(dsName))
+        {
+
+            namedContainers[dsName] = DSContainer();
+            std::cout << "New data structure found, instantiating " << dsName << std::endl;
+        }
+
+        std::vector<T> queueContents;
+        int size = dataStructure.size();
+        for (int i = 0; i < size; i++)
+        {
+            // queueContents.push_back(dataStructure.front());
+            queueContents.insert(queueContents.begin(), dataStructure.front());
+            dataStructure.pop();
+        }
+        // std::reverse(queueContents.begin(), queueContents.end());
+
+        std::vector<T> frame;
+        namedContainers[dsName].SaveFrame(new QueueFrame(frame));
+        for (auto it = queueContents.rbegin(); it != queueContents.rend(); ++it)
+        {
+            // frame.push_back(*it);
+            frame.insert(frame.begin(), *it);
+            // std::reverse(frame.begin(), frame.end());
+            namedContainers[dsName].SaveFrame(new QueueFrame(frame));
+        }
+        for (int i = 0; i < size; i++)
+        {
+            frame.pop_back();
+            namedContainers[dsName].SaveFrame(new QueueFrame(frame));
         }
 
         bool displayNext = false;

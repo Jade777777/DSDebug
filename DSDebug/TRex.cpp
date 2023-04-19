@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <queue>
 #include "TRex.h"
 
 std::vector<int> GenerateRandomInts(int length)
@@ -117,6 +118,15 @@ void TestStack()
     TRex::Log(floatStack, "Float Stack");
 }
 
+void TestQueue()
+{
+    std::queue<int> intQueue;
+    intQueue.push(1);
+    intQueue.push(2);
+    intQueue.push(3);
+    TRex::Log(intQueue, "Int Queue");
+}
+
 void TestTree()
 {
 
@@ -162,6 +172,8 @@ int main(int argc, char *argv[])
     }
 
     TestStack();
+
+    TestQueue();
 
     TestTree();
 
