@@ -18,27 +18,45 @@ concept arithmetic = std::integral<T> || std::floating_point<T>;
 template <typename T>
 concept totallyOrdered = std::totally_ordered<T> && !(std::integral<T> || std::floating_point<T>);
 
+
+
 static bool initialSlider = true;
 static bool updateSlider = false;
 static int sliderX;
 static int sliderY;
 static int prevx = 0, prevy = 0, prev = 0;
 
+
+/// <summary>
+/// TRex provides the ability to visualize data structures .
+/// Targeted at 240 lv students easily.
+/// Works on Windows and Linux.
+/// </summary>
 class TRex
 {
 private:
+    /// <summary>
+    /// Abstract class for all data structures. 
+    /// Each data structure is made out of an array of DSFrame.
+    /// Each frame has a unique draw function allowing for easy developement of variation.
+    /// </summary>
     class DSFrame
     {
     public:
         virtual void Draw() = 0;
     };
 #pragma region UI
+    /// <summary>
+    /// Abstract class allowing programmers to give custom functionality to buttons.
+    /// </summary>
     class ButtonEvent
     {
     public:
         virtual void Activate() = 0;
     };
-
+    /// <summary>
+    /// Draw Window is the main draw function. It draws the UI and the current data structure.
+    /// </summary>
     static void DrawWindow()
     {
 
@@ -53,23 +71,21 @@ private:
         DrawDS();
     }
 
+
     static void DrawCenterText(int x, int y, std::string text)
     {
-
         int textXCenter = tigrTextWidth(tfont, text.c_str()) / 2;  // text.size() * 4;
         int textYcenter = tigrTextHeight(tfont, text.c_str()) / 2; // assume there are no new lines
         tigrPrint(screen, tfont, x - textXCenter, y - textYcenter, tigrRGB(0xff, 0xff, 0xff), text.c_str());
     }
 
+     /// <summary>
+     /// Draw a button paired with a button event. 
+     /// If the button event is activated it will be activated imediatley after the button is drawn. 
+     /// </summary>
     static void DrawButton(int x, int y, int width, int height, std::string text, ButtonEvent &buttonEvent)
     {
-
         width = std::max(width, tigrTextWidth(tfont, text.c_str()) / 2) + 4;
-
-        // Change button color
-        /*TPixel neutral = tigrRGB(200, 200, 200);
-        TPixel highlight = tigrRGB(230, 230, 230);
-        TPixel selected = tigrRGB(170, 170, 170);*/
 
         TPixel neutral = tigrRGB(48, 45, 102);
         TPixel highlight = tigrRGB(81, 76, 173);
@@ -117,6 +133,10 @@ private:
 #pragma endregion
 #pragma region DataStructures
 public:
+    /// <summary>
+    /// The Node object is used to create a n-ary tree data structure.
+    /// Users of the TRex library can create a vector of nodes and pass it into the log function.
+    /// </summary>
     class Node
     {
     public:
@@ -134,6 +154,8 @@ public:
     };
 
 private:
+
+
     template <typename T>
     class StackFrame : public DSFrame
     {
@@ -160,19 +182,19 @@ private:
                 else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
                 {
                     char str[50];
-                    sprintf(str, "%d", c);
+                    sprintf_s(str, "%d", c);
                     text = str;
                 }
                 else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
                 {
                     char str[50];
-                    sprintf(str, "%f", c);
+                    sprintf_s(str, "%f", c);
                     text = str;
                 }
                 else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
                 {
                     char str[50];
-                    sprintf(str, "%f", c);
+                    sprintf_s(str, "%f", c);
                     text = str;
                 }
 
@@ -210,19 +232,19 @@ private:
                 else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
                 {
                     char str[50];
-                    sprintf(str, "%d", c);
+                    sprintf_s(str, "%d", c);
                     text = str;
                 }
                 else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
                 {
                     char str[50];
-                    sprintf(str, "%f", c);
+                    sprintf_s(str, "%f", c);
                     text = str;
                 }
                 else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
                 {
                     char str[50];
-                    sprintf(str, "%f", c);
+                    sprintf_s(str, "%f", c);
                     text = str;
                 }
 
@@ -232,7 +254,9 @@ private:
             }
         }
     };
-
+    /// <summary>
+    /// Contains the data and draw function for an n-ary tree data structure;
+    /// </summary>
     class TreeFrame : public DSFrame
     {
     private:
@@ -310,7 +334,9 @@ private:
         }
     };
 
-    //
+    /// <summary>
+    /// A frame that can contain an array like data structure for any arithmetic type.
+    /// </summary>
     template <typename T>
         requires arithmetic<T>
     class VectorNumFrame : public DSFrame
@@ -378,7 +404,9 @@ private:
         }
     };
 
-    //
+    /// <summary>
+    /// A single frame of a vector like data structure for any totally ordered type.
+    /// </summary>
     template <typename T>
         requires totallyOrdered<T>
     class VectorOrderedFrame : public DSFrame
@@ -469,6 +497,9 @@ private:
     };
 
 #pragma endregion
+    /// <summary>
+    /// holds a vector of frames and allows for navigation between them.
+    /// </summary>
     class DSContainer
     {
     protected:
@@ -629,9 +660,6 @@ private:
     {
         TPixel neutral = tigrRGB(48, 45, 102);
         TPixel highlight = tigrRGB(81, 76, 173);
-
-        Tigr *backdrop = tigrBitmap(screen->w, screen->h);
-        Tigr *slider = tigrBitmap(screen->w, screen->h);
 
         int barHeight = height * .5;
         int barWidth = width * .5;
