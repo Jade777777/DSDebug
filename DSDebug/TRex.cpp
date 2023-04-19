@@ -116,6 +116,37 @@ void TestStack()
     floatStack.push(fInput4);
     floatStack.push(fInput5);
     TRex::Log(floatStack, "Float Stack");
+
+    std::stack<int> longStack;
+    longStack.push(1);
+    longStack.push(2);
+    longStack.push(3);
+    longStack.push(4);
+    longStack.push(5);
+    longStack.push(6);
+    longStack.push(7);
+    longStack.push(8);
+    longStack.push(9);
+    longStack.push(10);
+    longStack.push(11);
+    longStack.push(12);
+    longStack.push(13);
+    longStack.push(14);
+    longStack.push(15);
+    longStack.push(16);
+    longStack.push(17);
+    longStack.push(18);
+    longStack.push(19);
+    longStack.push(20);
+    longStack.push(21);
+    longStack.push(22);
+    longStack.push(23);
+    longStack.push(24);
+    longStack.push(25);
+    longStack.push(26);
+    longStack.push(27);
+    longStack.push(28);
+    TRex::Log(longStack, "Long Stack");
 }
 
 void TestQueue()
