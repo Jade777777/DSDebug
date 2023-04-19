@@ -81,6 +81,40 @@ void TestStack()
     testStack.push(2);
     testStack.push(3);
     TRex::Log(testStack, "Test Stack");
+
+    std::stack<std::string> stringStack;
+    stringStack.push("Hello");
+    stringStack.push("world!");
+    stringStack.push("I");
+    stringStack.push("am");
+    stringStack.push("alive!");
+    TRex::Log(stringStack, "String Stack");
+
+    std::stack<double> doubleStack;
+    double dInput1 = 3.46;
+    double dInput2 = 79.36;
+    double dInput3 = 15463.756;
+    double dInput4 = 21.00;
+    double dInput5 = 20.50;
+    doubleStack.push(dInput1);
+    doubleStack.push(dInput2);
+    doubleStack.push(dInput3);
+    doubleStack.push(dInput4);
+    doubleStack.push(dInput5);
+    TRex::Log(doubleStack, "Double Stack");
+
+    std::stack<float> floatStack;
+    float fInput1 = 4.07;
+    float fInput2 = 0.364;
+    float fInput3 = -45.23;
+    float fInput4 = 10.11;
+    float fInput5 = 15.16;
+    floatStack.push(fInput1);
+    floatStack.push(fInput2);
+    floatStack.push(fInput3);
+    floatStack.push(fInput4);
+    floatStack.push(fInput5);
+    TRex::Log(floatStack, "Float Stack");
 }
 
 void TestTree()

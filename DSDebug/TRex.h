@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <concepts>
 #include <stack>
+#include <typeinfo>
+#include <type_traits>
 
 template <typename T>
 concept arithmetic = std::integral<T> || std::floating_point<T>;
@@ -167,12 +169,55 @@ private:
             int count = 0;
             int spacing = 5;
             for (auto const &c : data)
+            // for (auto it = data.begin(); it != data.end(); ++it)
             {
                 int y = (50 * count) + (spacing * count);
-                tigrFillRect(screen, 17, 300, 540, (y), tigrRGB(48, 45, 102));
-                std::string value = std::to_string(c);
-                char const *valuePrint = value.c_str();
-                tigrPrint(screen, tfont, 300 / 2, y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
+                tigrFillRect(screen, 17, 380 - y, 600, (50), tigrRGB(48, 45, 102));
+                std::string text;
+                // if (std::is_same_v<decltype(c), std::string>)
+                if (std::is_same_v<std::decay_t<decltype(c)>, std::string>)
+                    text = c;
+                else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
+                {
+                    // text = std::to_string(c);
+                    char str[50];
+                    sprintf(str, "%d", c);
+                    text = str;
+                    // try
+                    // {
+                    // std::string text = std::string(c);
+                    // text = std::to_string(std::stoi(c));
+                    // text = std::to_string(std::is_same_v<std::decay_t<decltype(c)>, int>);
+                    //     text = c;
+                    // }
+                    // catch (...)
+                    // {
+                    // }
+                }
+                else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
+                {
+                    char str[50];
+                    sprintf(str, "%f", c);
+                    text = str;
+                }
+                else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
+                {
+                    char str[50];
+                    sprintf(str, "%f", c);
+                    text = str;
+                }
+                // try
+                // {
+                //     // text = std::to_string(c);
+                //     text = c;
+                // }
+                // catch (const std::invalid_argument &e)
+                // {
+                // }
+
+                char const *valuePrint = text.c_str();
+                // tigrPrint(screen, tfont, 300 / 2, y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
+                tigrPrint(screen, tfont, 320 - (tigrTextWidth(tfont, valuePrint) / 2), 400 - y, tigrRGB(0xFF, 0xFF, 0xFF), valuePrint);
                 count++;
             }
         }
