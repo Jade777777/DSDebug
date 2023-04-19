@@ -125,6 +125,31 @@ void TestQueue()
     intQueue.push(2);
     intQueue.push(3);
     TRex::Log(intQueue, "Int Queue");
+
+    std::queue<std::string> stringQueue;
+    stringQueue.push("Hello");
+    stringQueue.push("there!");
+    stringQueue.push("I'm");
+    stringQueue.push("a");
+    stringQueue.push("queue!");
+    TRex::Log(stringQueue, "String Queue");
+
+    std::queue<double> doubleQueue;
+    double dInput1 = 4.19;
+    double dInput2 = 3.141592;
+    double dInput3 = 3.5;
+    double dInput4 = 21.00;
+    doubleQueue.push(dInput1);
+    doubleQueue.push(dInput2);
+    doubleQueue.push(dInput3);
+    doubleQueue.push(dInput4);
+    TRex::Log(doubleQueue, "Double Queue");
+
+    std::queue<float> floatQueue;
+    floatQueue.push(45.87);
+    floatQueue.push(126.352);
+    floatQueue.push(0.9836);
+    TRex::Log(floatQueue, "Float Queue");
 }
 
 void TestTree()
