@@ -215,19 +215,39 @@ private:
                     else if (std::is_same_v<std::decay_t<decltype(c)>, int>)
                     {
                         char str[50];
+
+#ifdef linux
+                        sprintf(str, "%d", c);
+#elif _WIN32
                         sprintf_s(str, "%d", c);
+#else
+                        
+#endif
+                        
                         text = str;
                     }
                     else if (std::is_same_v<std::decay_t<decltype(c)>, double>)
                     {
                         char str[50];
+#ifdef linux
+                        sprintf(str, "%f", c);
+#elif _WIN32
                         sprintf_s(str, "%f", c);
+#else
+                        
+#endif
                         text = str;
                     }
                     else if (std::is_same_v<std::decay_t<decltype(c)>, float>)
                     {
                         char str[50];
+#ifdef linux
+                        sprintf(str, "%f", c);
+#elif _WIN32
                         sprintf_s(str, "%f", c);
+#else
+                        
+#endif
                         text = str;
                     }
 
