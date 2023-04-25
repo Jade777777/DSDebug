@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TRex.cpp">
+    <ClCompile Include="TRexTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tigr\tigr.c">

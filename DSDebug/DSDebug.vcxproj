@@ -24,6 +24,7 @@
     <ProjectGuid>{d847235a-a3b7-492a-ac2c-42f8e7430940}</ProjectGuid>
     <RootNamespace>DSDebug</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>TRex</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -131,7 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="TRex.cpp" />
+    <ClCompile Include="TRexTest.cpp" />
     <ClCompile Include="Tigr\tigr.c" />
   </ItemGroup>
   <ItemGroup>
