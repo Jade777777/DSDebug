@@ -253,6 +253,21 @@ void TestTree()
     TRex::Log(testTree, "Test Tree");
 }
 
+void SimpleTestTree() {
+    std::vector<TRex::Node> testTRee;
+    testTRee.push_back(TRex::Node("A"));
+    testTRee.push_back(TRex::Node("B"));
+    testTRee.push_back(TRex::Node("C"));
+    testTRee.push_back(TRex::Node("D"));
+    testTRee[0].AddChild(1);
+    testTRee[0].AddChild(2);
+    testTRee[1].AddChild(3);
+    testTRee[2].AddChild(1);
+    testTRee[3].AddChild(3);
+    TRex::Log(testTRee, "Simple Test Tree");
+
+}
+
 void TestBubbleSort()
 {
     int temp = 0;
@@ -290,6 +305,10 @@ int main(int argc, char *argv[])
     TestBubbleSort();
 
     TestVectorT();
+
+    SimpleTestTree();
+
+
 
     TRex::End();
     return 0;
