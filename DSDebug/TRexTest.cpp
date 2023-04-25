@@ -242,6 +242,13 @@ void TestTree()
     testTree[0].AddChild(5);
     testTree[0].AddChild(7);
     testTree[0].AddChild(11);
+    testTree[3].AddChild(13);   
+    testTree[3].AddChild(17);
+    testTree[3].AddChild(19);
+    testTree[5].AddChild(23);
+    testTree[5].AddChild(3);
+    testTree[5].AddChild(5);
+    testTree[7].AddChild(7);
     TRex::Log(testTree, "Test Tree");
     TRex::Log(testTree, "Test Tree");
 }
