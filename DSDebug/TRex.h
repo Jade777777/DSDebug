@@ -217,7 +217,7 @@ private:
                         char str[50];
 
 #ifdef linux
-                        sprintf(str, "%d", c);
+                        snprintf(str, sizeof(str), "%d", c);
 #elif _WIN32
                         sprintf_s(str, "%d", c);
 #else
@@ -230,7 +230,7 @@ private:
                     {
                         char str[50];
 #ifdef linux
-                        sprintf(str, "%f", c);
+                        snprintf(str, sizeof(str), "%f", c);
 #elif _WIN32
                         sprintf_s(str, "%f", c);
 #else
@@ -242,7 +242,7 @@ private:
                     {
                         char str[50];
 #ifdef linux
-                        sprintf(str, "%f", c);
+                        snprintf(str, sizeof(str), "%f", c);
 #elif _WIN32
                         sprintf_s(str, "%f", c);
 #else
@@ -327,7 +327,7 @@ private:
                     {
                         char str[50];
 #ifdef linux
-                        sprintf(str, "%d", c);
+                        snprintf(str, sizeof(str), "%d", c);
 #elif _WIN32
                         sprintf_s(str, "%d", c);
 #else
@@ -339,7 +339,7 @@ private:
                     {
                         char str[50];
 #ifdef linux
-                        sprintf(str, "%f", c);
+                        snprintf(str, sizeof(str), "%f", c);
 #elif _WIN32
                         sprintf_s(str, "%f", c);
 #else
@@ -351,7 +351,7 @@ private:
                     {
                         char str[50];
 #ifdef linux
-                        sprintf(str, "%f", c);
+                        snprintf(str, sizeof(str),"%f", c);
 #elif _WIN32
                         sprintf_s(str, "%f", c);
 #else
