@@ -37,6 +37,7 @@ Call TRex()::Log() in the main() method and pass in the vector you would like to
 Call TRex()::End() at the bottom of the program. 
 
 ### Examples 
+```
 int main(int argc, char *argv[])
 {
     std::vector<double> demoDouble = { 1.1, 2.6, 12.0, 7.335, 9.4 };
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
     TRex::End();
     return 0;
 }
+```
 If functioning correctly, the GUI Window will display. 
 Click the “Prev.” and “Next” buttons to navigate through the data structures. 
 
@@ -58,6 +60,7 @@ Click the “Prev.” and “Next” buttons to navigate through the data struct
 The Log() function also allows you to implement sorting. If placed inside a sorting loop, TREX will display a scrollbar with buttons at the bottom of the screen. This will allow the user to navigate through the sort step-by-step. 
 
 ### Sorting Example 
+```
 int main(int argc, char *argv[])
 {
     std::vector<int> testDS = { 500, 330, 820, 570, 960, 710 };
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
     TRex::End();
     return 0;
 }
-
+```
 ### Compiling through the Command Line 
 #### Windows 
 Make sure GCC compiler (at least version 8) is installed on your system. 
