@@ -1,4 +1,4 @@
-#TREX Data Structure Visualization\
+# TREX Data Structure Visualization\
 ##General Information\
 T-REX is an open source project meant to help C++ programmers visualize data structures using an interactive GUI.\
 
