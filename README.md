@@ -1,4 +1,4 @@
-General Information
+General Information\
 T-REX is an open source project meant to help C++ programmers visualize data structures using an interactive GUI.
 
 Overview
